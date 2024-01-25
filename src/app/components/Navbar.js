@@ -345,7 +345,6 @@ const Navbar = () => {
                                   <img
                             className="w-32 h-32 rounded-full mx-auto"
                             src={user.pic ? user.pic : image2.src}
-                          />
                                     alt="John Doe"
                                   />
                                 </div>
