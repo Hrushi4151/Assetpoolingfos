@@ -84,7 +84,7 @@ const Home = () => {
                   <div className="bg-white shadow-md rounded-lg max-w-sm m-2">
                     <Link
                       key={index}
-                      href={`/Portfolio/portfoliodetails?pid=${elem._id}`}
+                      href={`/Portfolio/PortfolioDetails?pid=${elem._id}`}
                     >
                       <h2 className="m-2 p-3 font-bold text-blue-600 text-3xl">
                         {elem.PortfolioName}
