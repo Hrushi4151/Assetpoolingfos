@@ -102,13 +102,13 @@ const Page = () => {
 
                           <div className="flex flex-wrap items-center justify-center my-2 mt-4">
                             <span className="text-sm font-bold m-2 px-2 py-2 rounded bg-orange-700 text-white">
-                              Previous:{elem.PortfolioPrice && elem.PortfolioPrice[0].Price}
+                              Previous:₹{elem.PortfolioPrice && elem.PortfolioPrice[0].Price}
                             </span>
                             <span className="text-sm font-bold m-2 px-2 py-2 rounded bg-green-700 text-white">
-                              Current:{elem.PortfolioPrice && elem.PortfolioPrice[0].Price}
+                              Current:₹{elem.PortfolioPrice && elem.PortfolioPrice[0].Price}
                             </span>
                             <span className="text-sm font-bold m-2 px-2 py-2 rounded bg-pink-700 text-white">
-                              Remaining:{Math.round(elem.RemainingPrice)}
+                              Remaining:₹{Math.round(elem.RemainingPrice)}
                             </span>
                           </div>
                           <div className="flex items-center justify-center my-2 mt-4">
