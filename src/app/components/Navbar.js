@@ -344,7 +344,10 @@ const Navbar = () => {
                                 <div className=" photo-wrapper p-2">
                                   <img
                                     className="w-32 h-32 rounded-full mx-auto"
-                                    src="https://www.gravatar.com/avatar/2acfb745ecf9d4dccb3364752d17f65f?s=260&d=mp"
+                                    <img
+                            className="w-32 h-32 rounded-full mx-auto"
+                            src={user.pic ? user.pic : image2.src}
+                          />
                                     alt="John Doe"
                                   />
                                 </div>
