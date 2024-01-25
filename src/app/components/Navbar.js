@@ -343,8 +343,6 @@ const Navbar = () => {
                               <div className="w-[100%] border border-gray-100 bg-white shadow-xl rounded-lg py-3 overflow-hidden">
                                 <div className=" photo-wrapper p-2">
                                   <img
-                                    className="w-32 h-32 rounded-full mx-auto"
-                                    <img
                             className="w-32 h-32 rounded-full mx-auto"
                             src={user.pic ? user.pic : image2.src}
                           />
