@@ -7,7 +7,7 @@ import Image from "next/image";
 import image2 from "../images/defaultprofile.jpg"
 import { jwtDecode } from "jwt-decode";
 import { useRouter } from "next/navigation";
-
+ 
 const Navbar = () => {
   let location = usePathname();
   const router = useRouter();
@@ -440,8 +440,8 @@ const Navbar = () => {
                 href={"/dashboard"}
               >
                 Dashboard
+       //<li className="text-gray-300">|</li>
               </Link> */}
-       { //<li className="text-gray-300">|</li>}
               <Link
                 className={`text-lg  hover:text-blue-500 hover:font-bold ${location === "/dashboard/Portfolio/createportfolio"
                   ? "text-blue-500 font-bold"
