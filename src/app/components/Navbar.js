@@ -4,37 +4,50 @@ import image from "../images/logo.jpeg";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
+import image2 from "../images/defaultprofile.jpg"
 import { jwtDecode } from "jwt-decode";
 import { useRouter } from "next/navigation";
 
 const Navbar = () => {
   let location = usePathname();
-  const router=useRouter();
+  const router = useRouter();
   const [toggle, setToggle] = useState(false);
   const [role, setrole] = useState("user");
   const [profile, setprofile] = useState(false);
   const [loggedin, setloggedin] = useState(null);
-  let change=true;
+  const [user, setuser] = useState(null)
+  let change = true;
 
-  const logout=()=>{
-    if(localStorage.getItem("token"))
-    {
+  const logout = () => {
+    if (localStorage.getItem("token")) {
       localStorage.removeItem('token')
       setloggedin(false)
-      change=!change;
+      change = !change;
       router.push('/login')
       setrole(null)
-    }else{
-      change=!change;
+    } else {
+      change = !change;
       router.push('/login')
       setrole(null)
     }
   }
+  const userData = async () => {
+    const res = await fetch(${process.env.NEXT_PUBLIC_HOST}api/user/profile, {
+      method: "POST",
+      headers: {
+        Accept: "Application/json",
+        "Content-Type": "Application/json"
+      },
+      body: JSON.stringify({ Email: localStorage.getItem("APFOS_useremail") })
+    })
 
+    const response = await res.json();
+    setuser({ name: response.error.name, email: response.error.email, phone: response.error.phone, waddress: response.error.metamaskaddress, address: response.error.address, pincode: response.error.pincode, pic: response.error.pic });
+  }
   useEffect(() => {
     if (localStorage.getItem("token")) {
       let token = localStorage.getItem("token").toString();
-      const decoded = jwtDecode(token);;
+      const decoded = jwtDecode(token);
       // Check for expired token
       var dateNow = new Date() / 1000;
       if (dateNow > decoded.exp) {
@@ -43,15 +56,15 @@ const Navbar = () => {
         router.push("/login");
       } else {
         setloggedin(true);
-        change=!change;
+        change = !change;
         if (decoded.role == "user") {
           setrole("user");
         }
         else if (decoded.role == "admin") {
           setrole("admin");
-        }else{
+        } else {
           router.push('/login')
-          change=!change;
+          change = !change;
         }
       }
     }
@@ -59,14 +72,15 @@ const Navbar = () => {
     //   router.push('/login')
     //   change=!change;
     // }
-  // },[setrole,loggedin]);
-  },[change,loggedin,setloggedin,role,setrole,logout]);
+    // },[setrole,loggedin]);
+    userData();
+  }, [change, loggedin, setloggedin, role, setrole, logout]);
 
-  
+
 
   return (
     <>
-      {role == "user"|| role == null ? (
+      {role == "user" || role == null ? (
         <>
           <nav className="relative px-4 py-3 flex justify-between items-center bg-white">
             <div className="flex flex-row justify-center items-center">
@@ -93,53 +107,48 @@ const Navbar = () => {
             </div>
             <ul className="hidden absolute top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 lg:mx-auto lg:flex lg:items-center lg:w-auto lg:space-x-6">
               <Link
-                className={`text-lg  hover:text-blue-500 hover:font-bold  ${
-                  location === "/" ? "text-blue-500 font-bold" : "text-gray-400"
-                }`}
+                className={`text-lg  hover:text-blue-500 hover:font-bold  ${location === "/" ? "text-blue-500 font-bold" : "text-gray-400"
+                  }`}
                 href={"/"}
               >
                 Home
               </Link>
               <li className="text-gray-300">|</li>
               <Link
-                className={`text-lg  hover:text-blue-500 hover:font-bold ${
-                  location === "/portfolios"
-                    ? "text-blue-500 font-bold"
-                    : "text-gray-400"
-                }`}
+                className={`text-lg  hover:text-blue-500 hover:font-bold ${location === "/portfolios"
+                  ? "text-blue-500 font-bold"
+                  : "text-gray-400"
+                  }`}
                 href={"/portfolios"}
               >
                 Portfolios
               </Link>
               <li className="text-gray-300">|</li>
               <Link
-                className={`text-lg  hover:text-blue-500 hover:font-bold ${
-                  location === "/Portfolio/assests/buyassestlist"
-                    ? "text-blue-500 font-bold"
-                    : "text-gray-400"
-                }`}
+                className={`text-lg  hover:text-blue-500 hover:font-bold ${location === "/Portfolio/assests/buyassestlist"
+                  ? "text-blue-500 font-bold"
+                  : "text-gray-400"
+                  }`}
                 href={"/Portfolio/assests/buyassestlist"}
               >
                 My Assets
               </Link>
               <li className="text-gray-300">|</li>
               <Link
-                className={`text-lg  hover:text-blue-500 hover:font-bold ${
-                  location === "/about"
-                    ? "text-blue-500 font-bold"
-                    : "text-gray-400"
-                }`}
+                className={`text-lg  hover:text-blue-500 hover:font-bold ${location === "/about"
+                  ? "text-blue-500 font-bold"
+                  : "text-gray-400"
+                  }`}
                 href={"/about"}
               >
                 About Us
               </Link>
               <li className="text-gray-300">|</li>
               <Link
-                className={`text-lg  hover:text-blue-500 hover:font-bold ${
-                  location === "/contact"
-                    ? "text-blue-500 font-bold"
-                    : "text-gray-400"
-                }`}
+                className={`text-lg  hover:text-blue-500 hover:font-bold ${location === "/contact"
+                  ? "text-blue-500 font-bold"
+                  : "text-gray-400"
+                  }`}
                 href={"/contact"}
               >
                 Contact
@@ -169,61 +178,59 @@ const Navbar = () => {
                   Logout
                 </button>
                 <div className="relative">
-                  <span onClick={()=>setprofile(!profile)} className="rounded-full hidden lg:inline-block lg:ml-auto lg:mr-3 p-2 bg-blue-300 hover:bg-orange-600 text-sm text-gray-900 font-bold transition duration-200">
-                    {!profile?<img
+                  <span onClick={() => setprofile(!profile)} className="rounded-full hidden lg:inline-block lg:ml-auto lg:mr-3 p-2 bg-blue-300 hover:bg-orange-600 text-sm text-gray-900 font-bold transition duration-200">
+                    {!profile ? <img
                       className="w-8"
                       src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAACXBIWXMAAAsTAAALEwEAmpwYAAAEGklEQVR4nO2aS2xWRRTHf0hpSyzRPihEIVRXIChEEyJ7DLWJ2OoKH0tSVmChGzbWuBICK3wGwoIVcWmxoguliQEsatAYH4USwksCmCYmyKsPc5L/TSb92ntn5k5bNPyTSb5895w59//NnDPnnPngAf6/eBTYCOwGeoHfgOvALQ37/CvwmWReAh7hPkEN8DpwFBgBxgOH6XwBvKa5Zhy1wHbgsvNSt4FjQA/QAawEGiVbq8+rgFck0w/ccfQvAW9JdkbwInDWeYEfgE6gPmKueun+6Mx3BtjANMJ+qQ8dg2a8NdHcc/QDnXbm3zcd220R8L0M/ANsA+amNgJUAV0KDmZrAGhONXmLltsm/h14ukB+BbAT+AYYEvGbwDngELDOw+ZqYFA2B/UOpVciI3FSDjsVmoCDwGhBpBoD3pV8HpqA7xwyzWV8IttOJ4C6HFkz8ktg6L0HfAI8nDNvnUNmINZnPnK2U95KPAR8G3GGZMN0qwtWZlCy74eSaHMcu8gnXi1BIhvdBTbWOAHAOzTPl5Oa0lYP+d4ERM572Oly/MVri+1wzom5HvH/7wREbDzpEZp/kqyF/0IHvxywhAsTkbCxPmDLXypalTckaNHKB4sTEmn3sDfHSWc25Ql+JaHNnkSaExLxdeItku/LS+BGlMVabeGDBTrgUhBZ7mmzQVnzvanqmXZN+DVhuJCAxGhg+t4vPSvOKrBHD98OJNKXgMjPgTbfkZ5VmhU4oocvB076QQIilqOFoEN6VjZXIEsDLHv1haUnfyYgckVz+WKlkz5V4C89NGfyRUPCqBViNzu/rk32MKuf8xK4iZinfKwsiduBmW2No5eECOqglCVinZQQZETsnZNsLcNzqgBjSZjus4E2m6R7I8/ZfQ+myaJIzDDdUDyV5+x9keE3W+prESSuRmxl9/C2I6MCeyMPxAzdEUSsyReDnrwDMTZFcSPYqQASA6oxYnAsL0VpVCIWkjROxJIAIo9H2mhQtLqb955fBqbxk62KL5HY1eiU/ud5Qm9KyIqXGNQFEMlrL/kUVnYLkBt9slI3pq/7RAARkw1Fm3Qv+kS7LPqcDlz+FnUjfYlY029ZwPxVSvfHdf1QiBqnHeSjsBbYH3m6m84B4HkPO9ulMxhy9rSphLWm2DNTpAhbJ1wDlB32a3dN0ePNGnRjMVs+a5n+4TScrUt+eMJNU+pxF/hUL5+l7GecO5NgzHcayCdUCRZ12lOOUeBjx++Ol7mWW6x7jfFZHkO64iiFpc7SzsY4FxmqJ8VjgaE11TiuXZEUtdqzqRpyeWNMPjmtd++t0+w3Z4EXmCHUKOZfSUjAUqNtkYVWaVTr7xdHFf9DX/6OGg+blDnfF6hXcbZLZbP9gWbYeelhfWfP3lNJHfNviQfgv4B/ARxzhNGFGL+bAAAAAElFTkSuQmCC"
-                    />:<img className="w-8" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAACXBIWXMAAAsTAAALEwEAmpwYAAADnUlEQVR4nO2aSU8UURDHf0aEMRiRQUBvcjQY9UuooKjIze2m0YtL0KvLGT2ZmPA5NEggUYMrAu6JAsrJ5aLx5ghRM6biv5MKztLd07NI+CedDLyq6nqv6tWrqtewjKWLNNALXAGGgGngG7Cgx36/1ZjR7AeaqRGkgKPAKPAbyEZ8fgEjwBGgoRoTWA2cAz47peaBO8AFWWazVnyVnmb9z8YuAnfFE/B/Avq1OBXBHmDOKTAJHAOaYshaBxwHppy890A3ZYSt1KB74VNgZ4Lyu4DnTv71clhngxS3F3wHTgErk34Jf2WeATLO2u1JCe+QubOKOlsoP7YCM3rnO+lQElqdwAlgPZVDM/BA756TV8RCyrnTI6CRyqMRGHduFmvPDDp3ssOuWmhxXmEBIHKIDTZ2JfZEmD2TkU4W3UIfdsE5YdGpVnDWbf5QLnbenRPlCLFxUQe8kG42qYJoUKpgxDuoPeyWbp+LWeWIixBhcU8pRlsMxdpk+fsh6Ve4SHqoEOGoiCx3CosJ8byOOJk28Rjvkwh8J8QznI8grbR6PmIC6BUKO5k4PP6gtPrmZz49D0jwbeJlAK/cubMxAm2cE3tM/HtzDV7VoNUTcRBmlUuxhMdlyRggB4Y0uI/4KGSZJCyx2HtukAOzGrQqrhTkWvWkLBGgU7KsL/APvmrQcptSsVjxJCeBsnCT94UcWNBgPcnAu1IS7rT44A76BFWZSKFoFgUFJ7JkXGt2qWz2IQ1aBzAuCoXYKIdmMfQVCr/BgWjNs//6QOzVoHULoyLKYZeEZcbE35MvGQuSRusA1mrSmHZJ49p8RCMSbm3MsJhMII23UiAsTornViGiwyKyQiksHpdYWE1JRhhYYfVMOh4sdtB8FOEuag890u1DmGuIfhE/q8Hmw0vpdjoMQ8r1eq2hXCvol04zUS6FusWUUXOs2tgO/JBOka8yrrsVSCL/iotWNeVMl2txBKRcaB2vUhN7jTosQaeloZTVmHax3v6uFNLAQ3cdV/KFT4czrbnZNiqzJ97pnZaVb0pKcLtzs4x6rxYOk0adotMP505J1C//7JkgAGTVUE7q9nWFrjJeOvnXyn333uXMHnTtT8T8iiGt3ClIO7JypSRvi4ta56xLZ7LKSC29vqS+U6fCdr2eFl0a9YlmzPUJgrTjdLW+gGhQV3xYJUA24vNTlenBak0gF5rUi7Wq7aaKpq/uoxr7/Ubl6YBo89YTy+A/xx+3026HVKnF7QAAAABJRU5ErkJggg=="/>}
+                    /> : <img className="w-8" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAACXBIWXMAAAsTAAALEwEAmpwYAAADnUlEQVR4nO2aSU8UURDHf0aEMRiRQUBvcjQY9UuooKjIze2m0YtL0KvLGT2ZmPA5NEggUYMrAu6JAsrJ5aLx5ghRM6biv5MKztLd07NI+CedDLyq6nqv6tWrqtewjKWLNNALXAGGgGngG7Cgx36/1ZjR7AeaqRGkgKPAKPAbyEZ8fgEjwBGgoRoTWA2cAz47peaBO8AFWWazVnyVnmb9z8YuAnfFE/B/Avq1OBXBHmDOKTAJHAOaYshaBxwHppy890A3ZYSt1KB74VNgZ4Lyu4DnTv71clhngxS3F3wHTgErk34Jf2WeATLO2u1JCe+QubOKOlsoP7YCM3rnO+lQElqdwAlgPZVDM/BA756TV8RCyrnTI6CRyqMRGHduFmvPDDp3ssOuWmhxXmEBIHKIDTZ2JfZEmD2TkU4W3UIfdsE5YdGpVnDWbf5QLnbenRPlCLFxUQe8kG42qYJoUKpgxDuoPeyWbp+LWeWIixBhcU8pRlsMxdpk+fsh6Ve4SHqoEOGoiCx3CosJ8byOOJk28Rjvkwh8J8QznI8grbR6PmIC6BUKO5k4PP6gtPrmZz49D0jwbeJlAK/cubMxAm2cE3tM/HtzDV7VoNUTcRBmlUuxhMdlyRggB4Y0uI/4KGSZJCyx2HtukAOzGrQqrhTkWvWkLBGgU7KsL/APvmrQcptSsVjxJCeBsnCT94UcWNBgPcnAu1IS7rT44A76BFWZSKFoFgUFJ7JkXGt2qWz2IQ1aBzAuCoXYKIdmMfQVCr/BgWjNs//6QOzVoHULoyLKYZeEZcbE35MvGQuSRusA1mrSmHZJ49p8RCMSbm3MsJhMII23UiAsTornViGiwyKyQiksHpdYWE1JRhhYYfVMOh4sdtB8FOEuag890u1DmGuIfhE/q8Hmw0vpdjoMQ8r1eq2hXCvol04zUS6FusWUUXOs2tgO/JBOka8yrrsVSCL/iotWNeVMl2txBKRcaB2vUhN7jTosQaeloZTVmHax3v6uFNLAQ3cdV/KFT4czrbnZNiqzJ97pnZaVb0pKcLtzs4x6rxYOk0adotMP505J1C//7JkgAGTVUE7q9nWFrjJeOvnXyn333uXMHnTtT8T8iiGt3ClIO7JypSRvi4ta56xLZ7LKSC29vqS+U6fCdr2eFl0a9YlmzPUJgrTjdLW+gGhQV3xYJUA24vNTlenBak0gF5rUi7Wq7aaKpq/uoxr7/Ubl6YBo89YTy+A/xx+3026HVKnF7QAAAABJRU5ErkJggg==" />}
                   </span>
-                  {profile&&<div class="absolute -top-24 right-36 z-50 invisible lg:visible flex items-center h-screen w-full justify-center">
-                    <div class="max-w-xs">
-                      <div class="w-[18vw] border border-gray-100 bg-white shadow-xl rounded-lg py-3 overflow-hidden">
-                        <div class=" photo-wrapper p-2">
+                  {profile && <div className="absolute -top-24 right-36 z-50 invisible lg:visible flex items-center h-screen w-full justify-center">
+                    <div className="max-w-xs">
+                      <div className="w-[18vw] border border-gray-100 bg-white shadow-xl rounded-lg py-3 overflow-hidden">
+                        <div className=" photo-wrapper p-2">
                           <img
-                            class="w-32 h-32 rounded-full mx-auto"
-                            src="https://www.gravatar.com/avatar/2acfb745ecf9d4dccb3364752d17f65f?s=260&d=mp"
-                            alt="John Doe"
+                            className="w-32 h-32 rounded-full mx-auto"
+                            src={user.pic ? user.pic : image2.src}
                           />
                         </div>
-                        <div class="p-2">
-                          <h3 class="text-center text-xl text-gray-900 font-medium leading-8">
-                            Joh Doe
+                        <div className="p-2">
+                          <h3 className="text-center text-xl text-gray-900 font-medium leading-8">
+                            {user.name}
                           </h3>
-                          <div class="text-center text-gray-400 text-xs font-semibold">
-                            <p>Web Developer</p>
+                          <div className="text-center text-gray-400 text-xs font-semibold">
                           </div>
-                          <table class="text-xs my-3">
+                          <table className="text-xs my-3">
                             <tbody>
                               <tr>
-                                <td class="px-2 py-2 text-gray-500 font-semibold">
+                                <td className="px-2 py-2 text-gray-500 font-semibold">
                                   Address
                                 </td>
-                                <td class="px-2 py-2">
-                                  Chatakpur-3, Dhangadhi Kailali
-                                </td>
+                                <td className="px-2 py-2">
+                                  {user.address}                                </td>
                               </tr>
                               <tr>
-                                <td class="px-2 py-2 text-gray-500 font-semibold">
+                                <td className="px-2 py-2 text-gray-500 font-semibold">
                                   Phone
                                 </td>
-                                <td class="px-2 py-2">+977 9955221114</td>
+                                <td className="px-2 py-2">{user.phone}</td>
                               </tr>
                               <tr>
-                                <td class="px-2 py-2 text-gray-500 font-semibold">
+                                <td className="px-2 py-2 text-gray-500 font-semibold">
                                   Email
                                 </td>
-                                <td class="px-2 py-2">john@exmaple.com</td>
+                                <td className="px-2 py-2">{user.email}</td>
                               </tr>
                             </tbody>
                           </table>
 
-                          <div class="text-center my-3">
+                          <div className="text-center my-3">
                             <a
-                              class="text-xs text-indigo-500 italic hover:underline hover:text-indigo-600 font-medium"
-                              href="#"
+                              className="text-xs text-indigo-500 italic hover:underline hover:text-indigo-600 font-medium"
+                              href="/dashboard/profile"
                             >
                               View Profile
                             </a>
+
                           </div>
                         </div>
                       </div>
@@ -301,95 +308,93 @@ const Navbar = () => {
                       </Link>
                     </li>
                   </ul>
-                
-                <div className="mt-auto">
-                  <div className="pt-6">
-                    {!loggedin ?<><Link
-                      href={"/login"}
-                      className="block px-4 py-3 mb-3  text-xs text-center font-semibold leading-none bg-gray-50 hover:bg-gray-100 rounded-xl"
-                    >
-                      Login
-                    </Link>
-                    <Link
-                      href={"/signup"}
-                      className="block px-4 py-3 mb-2 leading-loose text-xs text-center text-white font-semibold bg-blue-600 hover:bg-blue-700  rounded-xl"
-                    >
-                      Sign Up
-                    </Link></>:
-                    <><button
-                    onClick={logout}
-                    className="block px-4 py-3 mb-3  text-xs text-center font-semibold leading-none bg-gray-50 hover:bg-gray-100 rounded-xl"
-                  >
-                    Logout
-                  </button>
-                  <span
-                    onClick={()=>setprofile(!profile)}
-                    className="w-12 mx-auto block p-2 mb-2 leading-loose text-xs text-center text-white font-semibold bg-white hover:bg-orange-400  rounded-full"
-                  >
-                   {!profile?<img
-                      className="w-8"
-                      src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAACXBIWXMAAAsTAAALEwEAmpwYAAAEGklEQVR4nO2aS2xWRRTHf0hpSyzRPihEIVRXIChEEyJ7DLWJ2OoKH0tSVmChGzbWuBICK3wGwoIVcWmxoguliQEsatAYH4USwksCmCYmyKsPc5L/TSb92ntn5k5bNPyTSb5895w59//NnDPnnPngAf6/eBTYCOwGeoHfgOvALQ37/CvwmWReAh7hPkEN8DpwFBgBxgOH6XwBvKa5Zhy1wHbgsvNSt4FjQA/QAawEGiVbq8+rgFck0w/ccfQvAW9JdkbwInDWeYEfgE6gPmKueun+6Mx3BtjANMJ+qQ8dg2a8NdHcc/QDnXbm3zcd220R8L0M/ANsA+amNgJUAV0KDmZrAGhONXmLltsm/h14ukB+BbAT+AYYEvGbwDngELDOw+ZqYFA2B/UOpVciI3FSDjsVmoCDwGhBpBoD3pV8HpqA7xwyzWV8IttOJ4C6HFkz8ktg6L0HfAI8nDNvnUNmINZnPnK2U95KPAR8G3GGZMN0qwtWZlCy74eSaHMcu8gnXi1BIhvdBTbWOAHAOzTPl5Oa0lYP+d4ERM572Oly/MVri+1wzom5HvH/7wREbDzpEZp/kqyF/0IHvxywhAsTkbCxPmDLXypalTckaNHKB4sTEmn3sDfHSWc25Ql+JaHNnkSaExLxdeItku/LS+BGlMVabeGDBTrgUhBZ7mmzQVnzvanqmXZN+DVhuJCAxGhg+t4vPSvOKrBHD98OJNKXgMjPgTbfkZ5VmhU4oocvB076QQIilqOFoEN6VjZXIEsDLHv1haUnfyYgckVz+WKlkz5V4C89NGfyRUPCqBViNzu/rk32MKuf8xK4iZinfKwsiduBmW2No5eECOqglCVinZQQZETsnZNsLcNzqgBjSZjus4E2m6R7I8/ZfQ+myaJIzDDdUDyV5+x9keE3W+prESSuRmxl9/C2I6MCeyMPxAzdEUSsyReDnrwDMTZFcSPYqQASA6oxYnAsL0VpVCIWkjROxJIAIo9H2mhQtLqb955fBqbxk62KL5HY1eiU/ud5Qm9KyIqXGNQFEMlrL/kUVnYLkBt9slI3pq/7RAARkw1Fm3Qv+kS7LPqcDlz+FnUjfYlY029ZwPxVSvfHdf1QiBqnHeSjsBbYH3m6m84B4HkPO9ulMxhy9rSphLWm2DNTpAhbJ1wDlB32a3dN0ePNGnRjMVs+a5n+4TScrUt+eMJNU+pxF/hUL5+l7GecO5NgzHcayCdUCRZ12lOOUeBjx++Ol7mWW6x7jfFZHkO64iiFpc7SzsY4FxmqJ8VjgaE11TiuXZEUtdqzqRpyeWNMPjmtd++t0+w3Z4EXmCHUKOZfSUjAUqNtkYVWaVTr7xdHFf9DX/6OGg+blDnfF6hXcbZLZbP9gWbYeelhfWfP3lNJHfNviQfgv4B/ARxzhNGFGL+bAAAAAElFTkSuQmCC"
-                    />:<img className="w-8" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAACXBIWXMAAAsTAAALEwEAmpwYAAADnUlEQVR4nO2aSU8UURDHf0aEMRiRQUBvcjQY9UuooKjIze2m0YtL0KvLGT2ZmPA5NEggUYMrAu6JAsrJ5aLx5ghRM6biv5MKztLd07NI+CedDLyq6nqv6tWrqtewjKWLNNALXAGGgGngG7Cgx36/1ZjR7AeaqRGkgKPAKPAbyEZ8fgEjwBGgoRoTWA2cAz47peaBO8AFWWazVnyVnmb9z8YuAnfFE/B/Avq1OBXBHmDOKTAJHAOaYshaBxwHppy890A3ZYSt1KB74VNgZ4Lyu4DnTv71clhngxS3F3wHTgErk34Jf2WeATLO2u1JCe+QubOKOlsoP7YCM3rnO+lQElqdwAlgPZVDM/BA756TV8RCyrnTI6CRyqMRGHduFmvPDDp3ssOuWmhxXmEBIHKIDTZ2JfZEmD2TkU4W3UIfdsE5YdGpVnDWbf5QLnbenRPlCLFxUQe8kG42qYJoUKpgxDuoPeyWbp+LWeWIixBhcU8pRlsMxdpk+fsh6Ve4SHqoEOGoiCx3CosJ8byOOJk28Rjvkwh8J8QznI8grbR6PmIC6BUKO5k4PP6gtPrmZz49D0jwbeJlAK/cubMxAm2cE3tM/HtzDV7VoNUTcRBmlUuxhMdlyRggB4Y0uI/4KGSZJCyx2HtukAOzGrQqrhTkWvWkLBGgU7KsL/APvmrQcptSsVjxJCeBsnCT94UcWNBgPcnAu1IS7rT44A76BFWZSKFoFgUFJ7JkXGt2qWz2IQ1aBzAuCoXYKIdmMfQVCr/BgWjNs//6QOzVoHULoyLKYZeEZcbE35MvGQuSRusA1mrSmHZJ49p8RCMSbm3MsJhMII23UiAsTornViGiwyKyQiksHpdYWE1JRhhYYfVMOh4sdtB8FOEuag890u1DmGuIfhE/q8Hmw0vpdjoMQ8r1eq2hXCvol04zUS6FusWUUXOs2tgO/JBOka8yrrsVSCL/iotWNeVMl2txBKRcaB2vUhN7jTosQaeloZTVmHax3v6uFNLAQ3cdV/KFT4czrbnZNiqzJ97pnZaVb0pKcLtzs4x6rxYOk0adotMP505J1C//7JkgAGTVUE7q9nWFrjJeOvnXyn333uXMHnTtT8T8iiGt3ClIO7JypSRvi4ta56xLZ7LKSC29vqS+U6fCdr2eFl0a9YlmzPUJgrTjdLW+gGhQV3xYJUA24vNTlenBak0gF5rUi7Wq7aaKpq/uoxr7/Ubl6YBo89YTy+A/xx+3026HVKnF7QAAAABJRU5ErkJggg=="/>}
-                  </span>
-                  {profile && <div class="w-[100%] visible lg:invisible  flex items-center justify-center">
-                    <div class="max-w-xs">
-                      <div class="w-[100%] border border-gray-100 bg-white shadow-xl rounded-lg py-3 overflow-hidden">
-                        <div class=" photo-wrapper p-2">
-                          <img
-                            class="w-32 h-32 rounded-full mx-auto"
-                            src="https://www.gravatar.com/avatar/2acfb745ecf9d4dccb3364752d17f65f?s=260&d=mp"
-                            alt="John Doe"
-                          />
-                        </div>
-                        <div class="p-2">
-                          <h3 class="text-center text-xl text-gray-900 font-medium leading-8">
-                            Joh Doe
-                          </h3>
-                          <div class="text-center text-gray-400 text-xs font-semibold">
-                            <p>Web Developer</p>
-                          </div>
-                          <table class="text-xs my-3">
-                            <tbody>
-                              <tr>
-                                <td class="px-2 py-2 text-gray-500 font-semibold">
-                                  Address
-                                </td>
-                                <td class="px-2 py-2">
-                                  Chatakpur-3, Dhangadhi Kailali
-                                </td>
-                              </tr>
-                              <tr>
-                                <td class="px-2 py-2 text-gray-500 font-semibold">
-                                  Phone
-                                </td>
-                                <td class="px-2 py-2">+977 9955221114</td>
-                              </tr>
-                              <tr>
-                                <td class="px-2 py-2 text-gray-500 font-semibold">
-                                  Email
-                                </td>
-                                <td class="px-2 py-2">john@exmaple.com</td>
-                              </tr>
-                            </tbody>
-                          </table>
 
-                          <div class="text-center my-3">
-                            <a
-                              class="text-xs text-indigo-500 italic hover:underline hover:text-indigo-600 font-medium"
-                              href="#"
-                            >
-                              View Profile
-                            </a>
-                          </div>
-                        </div>
-                      </div>
+                  <div className="mt-auto">
+                    <div className="pt-6">
+                      {!loggedin ? <><Link
+                        href={"/login"}
+                        className="block px-4 py-3 mb-3  text-xs text-center font-semibold leading-none bg-gray-50 hover:bg-gray-100 rounded-xl"
+                      >
+                        Login
+                      </Link>
+                        <Link
+                          href={"/signup"}
+                          className="block px-4 py-3 mb-2 leading-loose text-xs text-center text-white font-semibold bg-blue-600 hover:bg-blue-700  rounded-xl"
+                        >
+                          Sign Up
+                        </Link></> :
+                        <><button
+                          onClick={logout}
+                          className="block px-4 py-3 mb-3  text-xs text-center font-semibold leading-none bg-gray-50 hover:bg-gray-100 rounded-xl"
+                        >
+                          Logout
+                        </button>
+                          <span
+                            onClick={() => setprofile(!profile)}
+                            className="w-12 mx-auto block p-2 mb-2 leading-loose text-xs text-center text-white font-semibold bg-white hover:bg-orange-400  rounded-full"
+                          >
+                            {!profile ? <img
+                              className="w-8"
+                              src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAACXBIWXMAAAsTAAALEwEAmpwYAAAEGklEQVR4nO2aS2xWRRTHf0hpSyzRPihEIVRXIChEEyJ7DLWJ2OoKH0tSVmChGzbWuBICK3wGwoIVcWmxoguliQEsatAYH4USwksCmCYmyKsPc5L/TSb92ntn5k5bNPyTSb5895w59//NnDPnnPngAf6/eBTYCOwGeoHfgOvALQ37/CvwmWReAh7hPkEN8DpwFBgBxgOH6XwBvKa5Zhy1wHbgsvNSt4FjQA/QAawEGiVbq8+rgFck0w/ccfQvAW9JdkbwInDWeYEfgE6gPmKueun+6Mx3BtjANMJ+qQ8dg2a8NdHcc/QDnXbm3zcd220R8L0M/ANsA+amNgJUAV0KDmZrAGhONXmLltsm/h14ukB+BbAT+AYYEvGbwDngELDOw+ZqYFA2B/UOpVciI3FSDjsVmoCDwGhBpBoD3pV8HpqA7xwyzWV8IttOJ4C6HFkz8ktg6L0HfAI8nDNvnUNmINZnPnK2U95KPAR8G3GGZMN0qwtWZlCy74eSaHMcu8gnXi1BIhvdBTbWOAHAOzTPl5Oa0lYP+d4ERM572Oly/MVri+1wzom5HvH/7wREbDzpEZp/kqyF/0IHvxywhAsTkbCxPmDLXypalTckaNHKB4sTEmn3sDfHSWc25Ql+JaHNnkSaExLxdeItku/LS+BGlMVabeGDBTrgUhBZ7mmzQVnzvanqmXZN+DVhuJCAxGhg+t4vPSvOKrBHD98OJNKXgMjPgTbfkZ5VmhU4oocvB076QQIilqOFoEN6VjZXIEsDLHv1haUnfyYgckVz+WKlkz5V4C89NGfyRUPCqBViNzu/rk32MKuf8xK4iZinfKwsiduBmW2No5eECOqglCVinZQQZETsnZNsLcNzqgBjSZjus4E2m6R7I8/ZfQ+myaJIzDDdUDyV5+x9keE3W+prESSuRmxl9/C2I6MCeyMPxAzdEUSsyReDnrwDMTZFcSPYqQASA6oxYnAsL0VpVCIWkjROxJIAIo9H2mhQtLqb955fBqbxk62KL5HY1eiU/ud5Qm9KyIqXGNQFEMlrL/kUVnYLkBt9slI3pq/7RAARkw1Fm3Qv+kS7LPqcDlz+FnUjfYlY029ZwPxVSvfHdf1QiBqnHeSjsBbYH3m6m84B4HkPO9ulMxhy9rSphLWm2DNTpAhbJ1wDlB32a3dN0ePNGnRjMVs+a5n+4TScrUt+eMJNU+pxF/hUL5+l7GecO5NgzHcayCdUCRZ12lOOUeBjx++Ol7mWW6x7jfFZHkO64iiFpc7SzsY4FxmqJ8VjgaE11TiuXZEUtdqzqRpyeWNMPjmtd++t0+w3Z4EXmCHUKOZfSUjAUqNtkYVWaVTr7xdHFf9DX/6OGg+blDnfF6hXcbZLZbP9gWbYeelhfWfP3lNJHfNviQfgv4B/ARxzhNGFGL+bAAAAAElFTkSuQmCC"
+                            /> : <img className="w-8" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAACXBIWXMAAAsTAAALEwEAmpwYAAADnUlEQVR4nO2aSU8UURDHf0aEMRiRQUBvcjQY9UuooKjIze2m0YtL0KvLGT2ZmPA5NEggUYMrAu6JAsrJ5aLx5ghRM6biv5MKztLd07NI+CedDLyq6nqv6tWrqtewjKWLNNALXAGGgGngG7Cgx36/1ZjR7AeaqRGkgKPAKPAbyEZ8fgEjwBGgoRoTWA2cAz47peaBO8AFWWazVnyVnmb9z8YuAnfFE/B/Avq1OBXBHmDOKTAJHAOaYshaBxwHppy890A3ZYSt1KB74VNgZ4Lyu4DnTv71clhngxS3F3wHTgErk34Jf2WeATLO2u1JCe+QubOKOlsoP7YCM3rnO+lQElqdwAlgPZVDM/BA756TV8RCyrnTI6CRyqMRGHduFmvPDDp3ssOuWmhxXmEBIHKIDTZ2JfZEmD2TkU4W3UIfdsE5YdGpVnDWbf5QLnbenRPlCLFxUQe8kG42qYJoUKpgxDuoPeyWbp+LWeWIixBhcU8pRlsMxdpk+fsh6Ve4SHqoEOGoiCx3CosJ8byOOJk28Rjvkwh8J8QznI8grbR6PmIC6BUKO5k4PP6gtPrmZz49D0jwbeJlAK/cubMxAm2cE3tM/HtzDV7VoNUTcRBmlUuxhMdlyRggB4Y0uI/4KGSZJCyx2HtukAOzGrQqrhTkWvWkLBGgU7KsL/APvmrQcptSsVjxJCeBsnCT94UcWNBgPcnAu1IS7rT44A76BFWZSKFoFgUFJ7JkXGt2qWz2IQ1aBzAuCoXYKIdmMfQVCr/BgWjNs//6QOzVoHULoyLKYZeEZcbE35MvGQuSRusA1mrSmHZJ49p8RCMSbm3MsJhMII23UiAsTornViGiwyKyQiksHpdYWE1JRhhYYfVMOh4sdtB8FOEuag890u1DmGuIfhE/q8Hmw0vpdjoMQ8r1eq2hXCvol04zUS6FusWUUXOs2tgO/JBOka8yrrsVSCL/iotWNeVMl2txBKRcaB2vUhN7jTosQaeloZTVmHax3v6uFNLAQ3cdV/KFT4czrbnZNiqzJ97pnZaVb0pKcLtzs4x6rxYOk0adotMP505J1C//7JkgAGTVUE7q9nWFrjJeOvnXyn333uXMHnTtT8T8iiGt3ClIO7JypSRvi4ta56xLZ7LKSC29vqS+U6fCdr2eFl0a9YlmzPUJgrTjdLW+gGhQV3xYJUA24vNTlenBak0gF5rUi7Wq7aaKpq/uoxr7/Ubl6YBo89YTy+A/xx+3026HVKnF7QAAAABJRU5ErkJggg==" />}
+                          </span>
+                          {profile && <div className="w-[100%] visible lg:invisible  flex items-center justify-center">
+                            <div className="max-w-xs">
+                              <div className="w-[100%] border border-gray-100 bg-white shadow-xl rounded-lg py-3 overflow-hidden">
+                                <div className=" photo-wrapper p-2">
+                                  <img
+                                    className="w-32 h-32 rounded-full mx-auto"
+                                    src={user.pic ? user.pic : image2.src}
+                                  />
+                                </div>
+                                <div className="p-2">
+                                  <h3 className="text-center text-xl text-gray-900 font-medium leading-8">
+                                    {user.name}
+                                  </h3>
+                                  <div className="text-center text-gray-400 text-xs font-semibold">
+                                  </div>
+                                  <table className="text-xs my-3">
+                                    <tbody>
+                                      <tr>
+                                        <td className="px-2 py-2 text-gray-500 font-semibold">
+                                          Address
+                                        </td>
+                                        <td className="px-2 py-2">
+                                          {user.address}                                </td>
+                                      </tr>
+                                      <tr>
+                                        <td className="px-2 py-2 text-gray-500 font-semibold">
+                                          Phone
+                                        </td>
+                                        <td className="px-2 py-2">{user.phone}</td>
+                                      </tr>
+                                      <tr>
+                                        <td className="px-2 py-2 text-gray-500 font-semibold">
+                                          Email
+                                        </td>
+                                        <td className="px-2 py-2">{user.email}</td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
+
+                                  <div className="text-center my-3">
+                                    <a
+                                      className="text-xs text-indigo-500 italic hover:underline hover:text-indigo-600 font-medium"
+                                      href="/dashboard/profile"
+                                    >
+                                      View Profile
+                                    </a>
+
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>}
+                        </>
+
+                      }
                     </div>
-                  </div>}
-                  </>
-                    
-                  }
                   </div>
-                </div>
                 </div>
               </nav>
             </div>
@@ -424,56 +429,51 @@ const Navbar = () => {
               </button>
             </div>
             <ul className="hidden absolute top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 lg:mx-auto lg:flex lg:items-center lg:w-auto lg:space-x-6">
-              <Link
-                className={`text-lg  hover:text-blue-500 hover:font-bold  ${
-                  location === "/dashboard"
-                    ? "text-blue-500 font-bold"
-                    : "text-gray-400"
-                }`}
+              {/* <Link
+                className={`text-lg  hover:text-blue-500 hover:font-bold  ${location === "/dashboard"
+                  ? "text-blue-500 font-bold"
+                  : "text-gray-400"
+                  }`}
                 href={"/dashboard"}
               >
                 Dashboard
-              </Link>
+              </Link> */}
               <li className="text-gray-300">|</li>
               <Link
-                className={`text-lg  hover:text-blue-500 hover:font-bold ${
-                  location === "/dashboard/Portfolio/createportfolio"
-                    ? "text-blue-500 font-bold"
-                    : "text-gray-400"
-                }`}
-                href={"/dashboard/Portfolio/createportfolio"}
+                className={`text-lg  hover:text-blue-500 hover:font-bold ${location === "/dashboard/Portfolio/createportfolio"
+                  ? "text-blue-500 font-bold"
+                  : "text-gray-400"
+                  }`}
+                href={"/dashboard/Portfolio/portfolios"}
               >
-                Create Portfolio
+                Portfolios
               </Link>
               <li className="text-gray-300">|</li>
               <Link
-                className={`text-lg  hover:text-blue-500 hover:font-bold ${
-                  location === "/dashboard/portfolios"
-                    ? "text-blue-500 font-bold"
-                    : "text-gray-400"
-                }`}
+                className={`text-lg  hover:text-blue-500 hover:font-bold ${location === "/dashboard/portfolios"
+                  ? "text-blue-500 font-bold"
+                  : "text-gray-400"
+                  }`}
                 href={"/dashboard/portfolios"}
               >
-                Portfolio
+                Your Portfolio
               </Link>
               <li className="text-gray-300">|</li>
               <Link
-                className={`text-lg  hover:text-blue-500 hover:font-bold ${
-                  location === "/dashboard/users"
-                    ? "text-blue-500 font-bold"
-                    : "text-gray-400"
-                }`}
+                className={`text-lg  hover:text-blue-500 hover:font-bold ${location === "/dashboard/users"
+                  ? "text-blue-500 font-bold"
+                  : "text-gray-400"
+                  }`}
                 href={"/dashboard/users"}
               >
                 Users
               </Link>
               <li className="text-gray-300">|</li>
               <Link
-                className={`text-lg  hover:text-blue-500 hover:font-bold ${
-                  location === "/dashboard/profile"
-                    ? "text-blue-500 font-bold"
-                    : "text-gray-400"
-                }`}
+                className={`text-lg  hover:text-blue-500 hover:font-bold ${location === "/dashboard/profile"
+                  ? "text-blue-500 font-bold"
+                  : "text-gray-400"
+                  }`}
                 href={"/dashboard/profile"}
               >
                 Profile
@@ -503,61 +503,59 @@ const Navbar = () => {
                   Logout
                 </button>
                 <div className="relative">
-                  <span onClick={()=>setprofile(!profile)} className="rounded-full hidden lg:inline-block lg:ml-auto lg:mr-3 p-2 bg-blue-300 hover:bg-orange-600 text-sm text-gray-900 font-bold transition duration-200">
-                    {!profile?<img
+                  <span onClick={() => setprofile(!profile)} className="rounded-full hidden lg:inline-block lg:ml-auto lg:mr-3 p-2 bg-blue-300 hover:bg-orange-600 text-sm text-gray-900 font-bold transition duration-200">
+                    {!profile ? <img
                       className="w-8"
                       src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAACXBIWXMAAAsTAAALEwEAmpwYAAAEGklEQVR4nO2aS2xWRRTHf0hpSyzRPihEIVRXIChEEyJ7DLWJ2OoKH0tSVmChGzbWuBICK3wGwoIVcWmxoguliQEsatAYH4USwksCmCYmyKsPc5L/TSb92ntn5k5bNPyTSb5895w59//NnDPnnPngAf6/eBTYCOwGeoHfgOvALQ37/CvwmWReAh7hPkEN8DpwFBgBxgOH6XwBvKa5Zhy1wHbgsvNSt4FjQA/QAawEGiVbq8+rgFck0w/ccfQvAW9JdkbwInDWeYEfgE6gPmKueun+6Mx3BtjANMJ+qQ8dg2a8NdHcc/QDnXbm3zcd220R8L0M/ANsA+amNgJUAV0KDmZrAGhONXmLltsm/h14ukB+BbAT+AYYEvGbwDngELDOw+ZqYFA2B/UOpVciI3FSDjsVmoCDwGhBpBoD3pV8HpqA7xwyzWV8IttOJ4C6HFkz8ktg6L0HfAI8nDNvnUNmINZnPnK2U95KPAR8G3GGZMN0qwtWZlCy74eSaHMcu8gnXi1BIhvdBTbWOAHAOzTPl5Oa0lYP+d4ERM572Oly/MVri+1wzom5HvH/7wREbDzpEZp/kqyF/0IHvxywhAsTkbCxPmDLXypalTckaNHKB4sTEmn3sDfHSWc25Ql+JaHNnkSaExLxdeItku/LS+BGlMVabeGDBTrgUhBZ7mmzQVnzvanqmXZN+DVhuJCAxGhg+t4vPSvOKrBHD98OJNKXgMjPgTbfkZ5VmhU4oocvB076QQIilqOFoEN6VjZXIEsDLHv1haUnfyYgckVz+WKlkz5V4C89NGfyRUPCqBViNzu/rk32MKuf8xK4iZinfKwsiduBmW2No5eECOqglCVinZQQZETsnZNsLcNzqgBjSZjus4E2m6R7I8/ZfQ+myaJIzDDdUDyV5+x9keE3W+prESSuRmxl9/C2I6MCeyMPxAzdEUSsyReDnrwDMTZFcSPYqQASA6oxYnAsL0VpVCIWkjROxJIAIo9H2mhQtLqb955fBqbxk62KL5HY1eiU/ud5Qm9KyIqXGNQFEMlrL/kUVnYLkBt9slI3pq/7RAARkw1Fm3Qv+kS7LPqcDlz+FnUjfYlY029ZwPxVSvfHdf1QiBqnHeSjsBbYH3m6m84B4HkPO9ulMxhy9rSphLWm2DNTpAhbJ1wDlB32a3dN0ePNGnRjMVs+a5n+4TScrUt+eMJNU+pxF/hUL5+l7GecO5NgzHcayCdUCRZ12lOOUeBjx++Ol7mWW6x7jfFZHkO64iiFpc7SzsY4FxmqJ8VjgaE11TiuXZEUtdqzqRpyeWNMPjmtd++t0+w3Z4EXmCHUKOZfSUjAUqNtkYVWaVTr7xdHFf9DX/6OGg+blDnfF6hXcbZLZbP9gWbYeelhfWfP3lNJHfNviQfgv4B/ARxzhNGFGL+bAAAAAElFTkSuQmCC"
-                    />:<img className="w-8" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAACXBIWXMAAAsTAAALEwEAmpwYAAADnUlEQVR4nO2aSU8UURDHf0aEMRiRQUBvcjQY9UuooKjIze2m0YtL0KvLGT2ZmPA5NEggUYMrAu6JAsrJ5aLx5ghRM6biv5MKztLd07NI+CedDLyq6nqv6tWrqtewjKWLNNALXAGGgGngG7Cgx36/1ZjR7AeaqRGkgKPAKPAbyEZ8fgEjwBGgoRoTWA2cAz47peaBO8AFWWazVnyVnmb9z8YuAnfFE/B/Avq1OBXBHmDOKTAJHAOaYshaBxwHppy890A3ZYSt1KB74VNgZ4Lyu4DnTv71clhngxS3F3wHTgErk34Jf2WeATLO2u1JCe+QubOKOlsoP7YCM3rnO+lQElqdwAlgPZVDM/BA756TV8RCyrnTI6CRyqMRGHduFmvPDDp3ssOuWmhxXmEBIHKIDTZ2JfZEmD2TkU4W3UIfdsE5YdGpVnDWbf5QLnbenRPlCLFxUQe8kG42qYJoUKpgxDuoPeyWbp+LWeWIixBhcU8pRlsMxdpk+fsh6Ve4SHqoEOGoiCx3CosJ8byOOJk28Rjvkwh8J8QznI8grbR6PmIC6BUKO5k4PP6gtPrmZz49D0jwbeJlAK/cubMxAm2cE3tM/HtzDV7VoNUTcRBmlUuxhMdlyRggB4Y0uI/4KGSZJCyx2HtukAOzGrQqrhTkWvWkLBGgU7KsL/APvmrQcptSsVjxJCeBsnCT94UcWNBgPcnAu1IS7rT44A76BFWZSKFoFgUFJ7JkXGt2qWz2IQ1aBzAuCoXYKIdmMfQVCr/BgWjNs//6QOzVoHULoyLKYZeEZcbE35MvGQuSRusA1mrSmHZJ49p8RCMSbm3MsJhMII23UiAsTornViGiwyKyQiksHpdYWE1JRhhYYfVMOh4sdtB8FOEuag890u1DmGuIfhE/q8Hmw0vpdjoMQ8r1eq2hXCvol04zUS6FusWUUXOs2tgO/JBOka8yrrsVSCL/iotWNeVMl2txBKRcaB2vUhN7jTosQaeloZTVmHax3v6uFNLAQ3cdV/KFT4czrbnZNiqzJ97pnZaVb0pKcLtzs4x6rxYOk0adotMP505J1C//7JkgAGTVUE7q9nWFrjJeOvnXyn333uXMHnTtT8T8iiGt3ClIO7JypSRvi4ta56xLZ7LKSC29vqS+U6fCdr2eFl0a9YlmzPUJgrTjdLW+gGhQV3xYJUA24vNTlenBak0gF5rUi7Wq7aaKpq/uoxr7/Ubl6YBo89YTy+A/xx+3026HVKnF7QAAAABJRU5ErkJggg=="/>}
+                    /> : <img className="w-8" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAACXBIWXMAAAsTAAALEwEAmpwYAAADnUlEQVR4nO2aSU8UURDHf0aEMRiRQUBvcjQY9UuooKjIze2m0YtL0KvLGT2ZmPA5NEggUYMrAu6JAsrJ5aLx5ghRM6biv5MKztLd07NI+CedDLyq6nqv6tWrqtewjKWLNNALXAGGgGngG7Cgx36/1ZjR7AeaqRGkgKPAKPAbyEZ8fgEjwBGgoRoTWA2cAz47peaBO8AFWWazVnyVnmb9z8YuAnfFE/B/Avq1OBXBHmDOKTAJHAOaYshaBxwHppy890A3ZYSt1KB74VNgZ4Lyu4DnTv71clhngxS3F3wHTgErk34Jf2WeATLO2u1JCe+QubOKOlsoP7YCM3rnO+lQElqdwAlgPZVDM/BA756TV8RCyrnTI6CRyqMRGHduFmvPDDp3ssOuWmhxXmEBIHKIDTZ2JfZEmD2TkU4W3UIfdsE5YdGpVnDWbf5QLnbenRPlCLFxUQe8kG42qYJoUKpgxDuoPeyWbp+LWeWIixBhcU8pRlsMxdpk+fsh6Ve4SHqoEOGoiCx3CosJ8byOOJk28Rjvkwh8J8QznI8grbR6PmIC6BUKO5k4PP6gtPrmZz49D0jwbeJlAK/cubMxAm2cE3tM/HtzDV7VoNUTcRBmlUuxhMdlyRggB4Y0uI/4KGSZJCyx2HtukAOzGrQqrhTkWvWkLBGgU7KsL/APvmrQcptSsVjxJCeBsnCT94UcWNBgPcnAu1IS7rT44A76BFWZSKFoFgUFJ7JkXGt2qWz2IQ1aBzAuCoXYKIdmMfQVCr/BgWjNs//6QOzVoHULoyLKYZeEZcbE35MvGQuSRusA1mrSmHZJ49p8RCMSbm3MsJhMII23UiAsTornViGiwyKyQiksHpdYWE1JRhhYYfVMOh4sdtB8FOEuag890u1DmGuIfhE/q8Hmw0vpdjoMQ8r1eq2hXCvol04zUS6FusWUUXOs2tgO/JBOka8yrrsVSCL/iotWNeVMl2txBKRcaB2vUhN7jTosQaeloZTVmHax3v6uFNLAQ3cdV/KFT4czrbnZNiqzJ97pnZaVb0pKcLtzs4x6rxYOk0adotMP505J1C//7JkgAGTVUE7q9nWFrjJeOvnXyn333uXMHnTtT8T8iiGt3ClIO7JypSRvi4ta56xLZ7LKSC29vqS+U6fCdr2eFl0a9YlmzPUJgrTjdLW+gGhQV3xYJUA24vNTlenBak0gF5rUi7Wq7aaKpq/uoxr7/Ubl6YBo89YTy+A/xx+3026HVKnF7QAAAABJRU5ErkJggg==" />}
                   </span>
-                  {profile&&<div class="absolute -top-24 right-36 z-50 invisible lg:visible flex items-center h-screen w-full justify-center">
-                    <div class="max-w-xs">
-                      <div class="w-[18vw] border border-gray-100 bg-white shadow-xl rounded-lg py-3 overflow-hidden">
-                        <div class=" photo-wrapper p-2">
+                  {profile && <div className="absolute -top-24 right-36 z-50 invisible lg:visible flex items-center h-screen w-full justify-center">
+                    <div className="max-w-xs">
+                      <div className="w-[18vw] border border-gray-100 bg-white shadow-xl rounded-lg py-3 overflow-hidden">
+                        <div className=" photo-wrapper p-2">
                           <img
-                            class="w-32 h-32 rounded-full mx-auto"
-                            src="https://www.gravatar.com/avatar/2acfb745ecf9d4dccb3364752d17f65f?s=260&d=mp"
-                            alt="John Doe"
+                            className="w-32 h-32 rounded-full mx-auto"
+                            src={user.pic ? user.pic : image2.src}
                           />
                         </div>
-                        <div class="p-2">
-                          <h3 class="text-center text-xl text-gray-900 font-medium leading-8">
-                            Joh Doe
+                        <div className="p-2">
+                          <h3 className="text-center text-xl text-gray-900 font-medium leading-8">
+                            {user.name}
                           </h3>
-                          <div class="text-center text-gray-400 text-xs font-semibold">
-                            <p>Web Developer</p>
+                          <div className="text-center text-gray-400 text-xs font-semibold">
                           </div>
-                          <table class="text-xs my-3">
+                          <table className="text-xs my-3">
                             <tbody>
                               <tr>
-                                <td class="px-2 py-2 text-gray-500 font-semibold">
+                                <td className="px-2 py-2 text-gray-500 font-semibold">
                                   Address
                                 </td>
-                                <td class="px-2 py-2">
-                                  Chatakpur-3, Dhangadhi Kailali
-                                </td>
+                                <td className="px-2 py-2">
+                                  {user.address}                                </td>
                               </tr>
                               <tr>
-                                <td class="px-2 py-2 text-gray-500 font-semibold">
+                                <td className="px-2 py-2 text-gray-500 font-semibold">
                                   Phone
                                 </td>
-                                <td class="px-2 py-2">+977 9955221114</td>
+                                <td className="px-2 py-2">{user.phone}</td>
                               </tr>
                               <tr>
-                                <td class="px-2 py-2 text-gray-500 font-semibold">
+                                <td className="px-2 py-2 text-gray-500 font-semibold">
                                   Email
                                 </td>
-                                <td class="px-2 py-2">john@exmaple.com</td>
+                                <td className="px-2 py-2">{user.email}</td>
                               </tr>
                             </tbody>
                           </table>
 
-                          <div class="text-center my-3">
+                          <div className="text-center my-3">
                             <a
-                              class="text-xs text-indigo-500 italic hover:underline hover:text-indigo-600 font-medium"
-                              href="#"
+                              className="text-xs text-indigo-500 italic hover:underline hover:text-indigo-600 font-medium"
+                              href="/dashboard/profile"
                             >
                               View Profile
                             </a>
+
                           </div>
                         </div>
                       </div>
@@ -599,12 +597,12 @@ const Navbar = () => {
                 <div>
                   <ul>
                     <li className="mb-1">
-                      <Link
+                      {/* <Link
                         className="block p-4 text-sm font-semibold text-gray-400 hover:bg-blue-50 hover:text-blue-600 rounded"
                         href={"/dashboard"}
                       >
                         Dashboard
-                      </Link>
+                      </Link> */}
                     </li>
                     <li className="mb-1">
                       <Link
@@ -640,93 +638,91 @@ const Navbar = () => {
                     </li>
                   </ul>
                   <div className="mt-auto">
-                  <div className="pt-6">
-                    {!loggedin ?<><Link
-                      href={"/login"}
-                      className="block px-4 py-3 mb-3  text-xs text-center font-semibold leading-none bg-gray-50 hover:bg-gray-100 rounded-xl"
-                    >
-                      Login
-                    </Link>
-                    <Link
-                      href={"/signup"}
-                      className="block px-4 py-3 mb-2 leading-loose text-xs text-center text-white font-semibold bg-blue-600 hover:bg-blue-700  rounded-xl"
-                    >
-                      Sign Up
-                    </Link></>:
-                    <><button
-                    onClick={logout}
-                    className="block px-4 py-3 mb-3  text-xs text-center font-semibold leading-none bg-gray-50 hover:bg-gray-100 rounded-xl"
-                  >
-                    Logout
-                  </button>
-                  <span
-                    onClick={()=>setprofile(!profile)}
-                    className="w-12 mx-auto block p-2 mb-2 leading-loose text-xs text-center text-white font-semibold bg-white hover:bg-orange-400  rounded-full"
-                  >
-                   {!profile?<img
-                      className="w-8"
-                      src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAACXBIWXMAAAsTAAALEwEAmpwYAAAEGklEQVR4nO2aS2xWRRTHf0hpSyzRPihEIVRXIChEEyJ7DLWJ2OoKH0tSVmChGzbWuBICK3wGwoIVcWmxoguliQEsatAYH4USwksCmCYmyKsPc5L/TSb92ntn5k5bNPyTSb5895w59//NnDPnnPngAf6/eBTYCOwGeoHfgOvALQ37/CvwmWReAh7hPkEN8DpwFBgBxgOH6XwBvKa5Zhy1wHbgsvNSt4FjQA/QAawEGiVbq8+rgFck0w/ccfQvAW9JdkbwInDWeYEfgE6gPmKueun+6Mx3BtjANMJ+qQ8dg2a8NdHcc/QDnXbm3zcd220R8L0M/ANsA+amNgJUAV0KDmZrAGhONXmLltsm/h14ukB+BbAT+AYYEvGbwDngELDOw+ZqYFA2B/UOpVciI3FSDjsVmoCDwGhBpBoD3pV8HpqA7xwyzWV8IttOJ4C6HFkz8ktg6L0HfAI8nDNvnUNmINZnPnK2U95KPAR8G3GGZMN0qwtWZlCy74eSaHMcu8gnXi1BIhvdBTbWOAHAOzTPl5Oa0lYP+d4ERM572Oly/MVri+1wzom5HvH/7wREbDzpEZp/kqyF/0IHvxywhAsTkbCxPmDLXypalTckaNHKB4sTEmn3sDfHSWc25Ql+JaHNnkSaExLxdeItku/LS+BGlMVabeGDBTrgUhBZ7mmzQVnzvanqmXZN+DVhuJCAxGhg+t4vPSvOKrBHD98OJNKXgMjPgTbfkZ5VmhU4oocvB076QQIilqOFoEN6VjZXIEsDLHv1haUnfyYgckVz+WKlkz5V4C89NGfyRUPCqBViNzu/rk32MKuf8xK4iZinfKwsiduBmW2No5eECOqglCVinZQQZETsnZNsLcNzqgBjSZjus4E2m6R7I8/ZfQ+myaJIzDDdUDyV5+x9keE3W+prESSuRmxl9/C2I6MCeyMPxAzdEUSsyReDnrwDMTZFcSPYqQASA6oxYnAsL0VpVCIWkjROxJIAIo9H2mhQtLqb955fBqbxk62KL5HY1eiU/ud5Qm9KyIqXGNQFEMlrL/kUVnYLkBt9slI3pq/7RAARkw1Fm3Qv+kS7LPqcDlz+FnUjfYlY029ZwPxVSvfHdf1QiBqnHeSjsBbYH3m6m84B4HkPO9ulMxhy9rSphLWm2DNTpAhbJ1wDlB32a3dN0ePNGnRjMVs+a5n+4TScrUt+eMJNU+pxF/hUL5+l7GecO5NgzHcayCdUCRZ12lOOUeBjx++Ol7mWW6x7jfFZHkO64iiFpc7SzsY4FxmqJ8VjgaE11TiuXZEUtdqzqRpyeWNMPjmtd++t0+w3Z4EXmCHUKOZfSUjAUqNtkYVWaVTr7xdHFf9DX/6OGg+blDnfF6hXcbZLZbP9gWbYeelhfWfP3lNJHfNviQfgv4B/ARxzhNGFGL+bAAAAAElFTkSuQmCC"
-                    />:<img className="w-8" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAACXBIWXMAAAsTAAALEwEAmpwYAAADnUlEQVR4nO2aSU8UURDHf0aEMRiRQUBvcjQY9UuooKjIze2m0YtL0KvLGT2ZmPA5NEggUYMrAu6JAsrJ5aLx5ghRM6biv5MKztLd07NI+CedDLyq6nqv6tWrqtewjKWLNNALXAGGgGngG7Cgx36/1ZjR7AeaqRGkgKPAKPAbyEZ8fgEjwBGgoRoTWA2cAz47peaBO8AFWWazVnyVnmb9z8YuAnfFE/B/Avq1OBXBHmDOKTAJHAOaYshaBxwHppy890A3ZYSt1KB74VNgZ4Lyu4DnTv71clhngxS3F3wHTgErk34Jf2WeATLO2u1JCe+QubOKOlsoP7YCM3rnO+lQElqdwAlgPZVDM/BA756TV8RCyrnTI6CRyqMRGHduFmvPDDp3ssOuWmhxXmEBIHKIDTZ2JfZEmD2TkU4W3UIfdsE5YdGpVnDWbf5QLnbenRPlCLFxUQe8kG42qYJoUKpgxDuoPeyWbp+LWeWIixBhcU8pRlsMxdpk+fsh6Ve4SHqoEOGoiCx3CosJ8byOOJk28Rjvkwh8J8QznI8grbR6PmIC6BUKO5k4PP6gtPrmZz49D0jwbeJlAK/cubMxAm2cE3tM/HtzDV7VoNUTcRBmlUuxhMdlyRggB4Y0uI/4KGSZJCyx2HtukAOzGrQqrhTkWvWkLBGgU7KsL/APvmrQcptSsVjxJCeBsnCT94UcWNBgPcnAu1IS7rT44A76BFWZSKFoFgUFJ7JkXGt2qWz2IQ1aBzAuCoXYKIdmMfQVCr/BgWjNs//6QOzVoHULoyLKYZeEZcbE35MvGQuSRusA1mrSmHZJ49p8RCMSbm3MsJhMII23UiAsTornViGiwyKyQiksHpdYWE1JRhhYYfVMOh4sdtB8FOEuag890u1DmGuIfhE/q8Hmw0vpdjoMQ8r1eq2hXCvol04zUS6FusWUUXOs2tgO/JBOka8yrrsVSCL/iotWNeVMl2txBKRcaB2vUhN7jTosQaeloZTVmHax3v6uFNLAQ3cdV/KFT4czrbnZNiqzJ97pnZaVb0pKcLtzs4x6rxYOk0adotMP505J1C//7JkgAGTVUE7q9nWFrjJeOvnXyn333uXMHnTtT8T8iiGt3ClIO7JypSRvi4ta56xLZ7LKSC29vqS+U6fCdr2eFl0a9YlmzPUJgrTjdLW+gGhQV3xYJUA24vNTlenBak0gF5rUi7Wq7aaKpq/uoxr7/Ubl6YBo89YTy+A/xx+3026HVKnF7QAAAABJRU5ErkJggg=="/>}
-                  </span>
-                  {profile && <div class="w-[100%] visible lg:invisible  flex items-center justify-center">
-                    <div class="max-w-xs">
-                      <div class="w-[100%] border border-gray-100 bg-white shadow-xl rounded-lg py-3 overflow-hidden">
-                        <div class=" photo-wrapper p-2">
-                          <img
-                            class="w-32 h-32 rounded-full mx-auto"
-                            src="https://www.gravatar.com/avatar/2acfb745ecf9d4dccb3364752d17f65f?s=260&d=mp"
-                            alt="John Doe"
-                          />
-                        </div>
-                        <div class="p-2">
-                          <h3 class="text-center text-xl text-gray-900 font-medium leading-8">
-                            Joh Doe
-                          </h3>
-                          <div class="text-center text-gray-400 text-xs font-semibold">
-                            <p>Web Developer</p>
-                          </div>
-                          <table class="text-xs my-3">
-                            <tbody>
-                              <tr>
-                                <td class="px-2 py-2 text-gray-500 font-semibold">
-                                  Address
-                                </td>
-                                <td class="px-2 py-2">
-                                  Chatakpur-3, Dhangadhi Kailali
-                                </td>
-                              </tr>
-                              <tr>
-                                <td class="px-2 py-2 text-gray-500 font-semibold">
-                                  Phone
-                                </td>
-                                <td class="px-2 py-2">+977 9955221114</td>
-                              </tr>
-                              <tr>
-                                <td class="px-2 py-2 text-gray-500 font-semibold">
-                                  Email
-                                </td>
-                                <td class="px-2 py-2">john@exmaple.com</td>
-                              </tr>
-                            </tbody>
-                          </table>
+                    <div className="pt-6">
+                      {!loggedin ? <><Link
+                        href={"/login"}
+                        className="block px-4 py-3 mb-3  text-xs text-center font-semibold leading-none bg-gray-50 hover:bg-gray-100 rounded-xl"
+                      >
+                        Login
+                      </Link>
+                        <Link
+                          href={"/signup"}
+                          className="block px-4 py-3 mb-2 leading-loose text-xs text-center text-white font-semibold bg-blue-600 hover:bg-blue-700  rounded-xl"
+                        >
+                          Sign Up
+                        </Link></> :
+                        <><button
+                          onClick={logout}
+                          className="block px-4 py-3 mb-3  text-xs text-center font-semibold leading-none bg-gray-50 hover:bg-gray-100 rounded-xl"
+                        >
+                          Logout
+                        </button>
+                          <span
+                            onClick={() => setprofile(!profile)}
+                            className="w-12 mx-auto block p-2 mb-2 leading-loose text-xs text-center text-white font-semibold bg-white hover:bg-orange-400  rounded-full"
+                          >
+                            {!profile ? <img
+                              className="w-8"
+                              src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAACXBIWXMAAAsTAAALEwEAmpwYAAAEGklEQVR4nO2aS2xWRRTHf0hpSyzRPihEIVRXIChEEyJ7DLWJ2OoKH0tSVmChGzbWuBICK3wGwoIVcWmxoguliQEsatAYH4USwksCmCYmyKsPc5L/TSb92ntn5k5bNPyTSb5895w59//NnDPnnPngAf6/eBTYCOwGeoHfgOvALQ37/CvwmWReAh7hPkEN8DpwFBgBxgOH6XwBvKa5Zhy1wHbgsvNSt4FjQA/QAawEGiVbq8+rgFck0w/ccfQvAW9JdkbwInDWeYEfgE6gPmKueun+6Mx3BtjANMJ+qQ8dg2a8NdHcc/QDnXbm3zcd220R8L0M/ANsA+amNgJUAV0KDmZrAGhONXmLltsm/h14ukB+BbAT+AYYEvGbwDngELDOw+ZqYFA2B/UOpVciI3FSDjsVmoCDwGhBpBoD3pV8HpqA7xwyzWV8IttOJ4C6HFkz8ktg6L0HfAI8nDNvnUNmINZnPnK2U95KPAR8G3GGZMN0qwtWZlCy74eSaHMcu8gnXi1BIhvdBTbWOAHAOzTPl5Oa0lYP+d4ERM572Oly/MVri+1wzom5HvH/7wREbDzpEZp/kqyF/0IHvxywhAsTkbCxPmDLXypalTckaNHKB4sTEmn3sDfHSWc25Ql+JaHNnkSaExLxdeItku/LS+BGlMVabeGDBTrgUhBZ7mmzQVnzvanqmXZN+DVhuJCAxGhg+t4vPSvOKrBHD98OJNKXgMjPgTbfkZ5VmhU4oocvB076QQIilqOFoEN6VjZXIEsDLHv1haUnfyYgckVz+WKlkz5V4C89NGfyRUPCqBViNzu/rk32MKuf8xK4iZinfKwsiduBmW2No5eECOqglCVinZQQZETsnZNsLcNzqgBjSZjus4E2m6R7I8/ZfQ+myaJIzDDdUDyV5+x9keE3W+prESSuRmxl9/C2I6MCeyMPxAzdEUSsyReDnrwDMTZFcSPYqQASA6oxYnAsL0VpVCIWkjROxJIAIo9H2mhQtLqb955fBqbxk62KL5HY1eiU/ud5Qm9KyIqXGNQFEMlrL/kUVnYLkBt9slI3pq/7RAARkw1Fm3Qv+kS7LPqcDlz+FnUjfYlY029ZwPxVSvfHdf1QiBqnHeSjsBbYH3m6m84B4HkPO9ulMxhy9rSphLWm2DNTpAhbJ1wDlB32a3dN0ePNGnRjMVs+a5n+4TScrUt+eMJNU+pxF/hUL5+l7GecO5NgzHcayCdUCRZ12lOOUeBjx++Ol7mWW6x7jfFZHkO64iiFpc7SzsY4FxmqJ8VjgaE11TiuXZEUtdqzqRpyeWNMPjmtd++t0+w3Z4EXmCHUKOZfSUjAUqNtkYVWaVTr7xdHFf9DX/6OGg+blDnfF6hXcbZLZbP9gWbYeelhfWfP3lNJHfNviQfgv4B/ARxzhNGFGL+bAAAAAElFTkSuQmCC"
+                            /> : <img className="w-8" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAACXBIWXMAAAsTAAALEwEAmpwYAAADnUlEQVR4nO2aSU8UURDHf0aEMRiRQUBvcjQY9UuooKjIze2m0YtL0KvLGT2ZmPA5NEggUYMrAu6JAsrJ5aLx5ghRM6biv5MKztLd07NI+CedDLyq6nqv6tWrqtewjKWLNNALXAGGgGngG7Cgx36/1ZjR7AeaqRGkgKPAKPAbyEZ8fgEjwBGgoRoTWA2cAz47peaBO8AFWWazVnyVnmb9z8YuAnfFE/B/Avq1OBXBHmDOKTAJHAOaYshaBxwHppy890A3ZYSt1KB74VNgZ4Lyu4DnTv71clhngxS3F3wHTgErk34Jf2WeATLO2u1JCe+QubOKOlsoP7YCM3rnO+lQElqdwAlgPZVDM/BA756TV8RCyrnTI6CRyqMRGHduFmvPDDp3ssOuWmhxXmEBIHKIDTZ2JfZEmD2TkU4W3UIfdsE5YdGpVnDWbf5QLnbenRPlCLFxUQe8kG42qYJoUKpgxDuoPeyWbp+LWeWIixBhcU8pRlsMxdpk+fsh6Ve4SHqoEOGoiCx3CosJ8byOOJk28Rjvkwh8J8QznI8grbR6PmIC6BUKO5k4PP6gtPrmZz49D0jwbeJlAK/cubMxAm2cE3tM/HtzDV7VoNUTcRBmlUuxhMdlyRggB4Y0uI/4KGSZJCyx2HtukAOzGrQqrhTkWvWkLBGgU7KsL/APvmrQcptSsVjxJCeBsnCT94UcWNBgPcnAu1IS7rT44A76BFWZSKFoFgUFJ7JkXGt2qWz2IQ1aBzAuCoXYKIdmMfQVCr/BgWjNs//6QOzVoHULoyLKYZeEZcbE35MvGQuSRusA1mrSmHZJ49p8RCMSbm3MsJhMII23UiAsTornViGiwyKyQiksHpdYWE1JRhhYYfVMOh4sdtB8FOEuag890u1DmGuIfhE/q8Hmw0vpdjoMQ8r1eq2hXCvol04zUS6FusWUUXOs2tgO/JBOka8yrrsVSCL/iotWNeVMl2txBKRcaB2vUhN7jTosQaeloZTVmHax3v6uFNLAQ3cdV/KFT4czrbnZNiqzJ97pnZaVb0pKcLtzs4x6rxYOk0adotMP505J1C//7JkgAGTVUE7q9nWFrjJeOvnXyn333uXMHnTtT8T8iiGt3ClIO7JypSRvi4ta56xLZ7LKSC29vqS+U6fCdr2eFl0a9YlmzPUJgrTjdLW+gGhQV3xYJUA24vNTlenBak0gF5rUi7Wq7aaKpq/uoxr7/Ubl6YBo89YTy+A/xx+3026HVKnF7QAAAABJRU5ErkJggg==" />}
+                          </span>
+                          {profile && <div className="absolute -top-24 right-36 z-50 invisible lg:visible flex items-center h-screen w-full justify-center">
+                            <div className="max-w-xs">
+                              <div className="w-[18vw] border border-gray-100 bg-white shadow-xl rounded-lg py-3 overflow-hidden">
+                                <div className=" photo-wrapper p-2">
+                                  <img
+                                    className="w-32 h-32 rounded-full mx-auto"
+                                    src={user.pic ? user.pic : image2.src}
+                                  />
+                                </div>
+                                <div className="p-2">
+                                  <h3 className="text-center text-xl text-gray-900 font-medium leading-8">
+                                    {user.name}
+                                  </h3>
+                                  <div className="text-center text-gray-400 text-xs font-semibold">
+                                  </div>
+                                  <table className="text-xs my-3">
+                                    <tbody>
+                                      <tr>
+                                        <td className="px-2 py-2 text-gray-500 font-semibold">
+                                          Address
+                                        </td>
+                                        <td className="px-2 py-2">
+                                          {user.address}                                </td>
+                                      </tr>
+                                      <tr>
+                                        <td className="px-2 py-2 text-gray-500 font-semibold">
+                                          Phone
+                                        </td>
+                                        <td className="px-2 py-2">{user.phone}</td>
+                                      </tr>
+                                      <tr>
+                                        <td className="px-2 py-2 text-gray-500 font-semibold">
+                                          Email
+                                        </td>
+                                        <td className="px-2 py-2">{user.email}</td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
 
-                          <div class="text-center my-3">
-                            <a
-                              class="text-xs text-indigo-500 italic hover:underline hover:text-indigo-600 font-medium"
-                              href="#"
-                            >
-                              View Profile
-                            </a>
-                          </div>
-                        </div>
-                      </div>
+                                  <div className="text-center my-3">
+                                    <a
+                                      className="text-xs text-indigo-500 italic hover:underline hover:text-indigo-600 font-medium"
+                                      href="/dashboard/profile"
+                                    >
+                                      View Profile
+                                    </a>
+
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>}
+                        </>
+
+                      }
                     </div>
-                  </div>}
-                  </>
-                    
-                  }
                   </div>
-                </div>
                 </div>
                 {/* <div className="mt-auto">
                   <div className="pt-6">
