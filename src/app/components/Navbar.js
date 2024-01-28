@@ -32,7 +32,7 @@ const Navbar = () => {
     }
   }
   const userData = async () => {
-    const res = await fetch(${process.env.NEXT_PUBLIC_HOST}api/user/profile, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_HOST}api/user/profile`, {
       method: "POST",
       headers: {
         Accept: "Application/json",
