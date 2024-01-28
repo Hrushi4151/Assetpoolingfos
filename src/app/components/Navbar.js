@@ -441,7 +441,7 @@ const Navbar = () => {
               >
                 Dashboard
               </Link> */}
-              <li className="text-gray-300">|</li>
+              // <li className="text-gray-300">|</li>
               <Link
                 className={`text-lg  hover:text-blue-500 hover:font-bold ${location === "/dashboard/Portfolio/createportfolio"
                   ? "text-blue-500 font-bold"
@@ -599,14 +599,14 @@ const Navbar = () => {
                 </div>
                 <div>
                   <ul>
-                    <li className="mb-1">
-                      {/* <Link
-                        className="block p-4 text-sm font-semibold text-gray-400 hover:bg-blue-50 hover:text-blue-600 rounded"
-                        href={"/dashboard"}
-                      >
-                        Dashboard
-                      </Link> */}
-                    </li>
+                    // <li className="mb-1">
+                    //   {/* <Link
+                    //     className="block p-4 text-sm font-semibold text-gray-400 hover:bg-blue-50 hover:text-blue-600 rounded"
+                    //     href={"/dashboard"}
+                    //   >
+                    //     Dashboard
+                    //   </Link> */}
+                    // </li>
                     <li className="mb-1">
                       <Link
                         className="block p-4 text-sm font-semibold text-gray-400 hover:bg-blue-50 hover:text-blue-600 rounded"
