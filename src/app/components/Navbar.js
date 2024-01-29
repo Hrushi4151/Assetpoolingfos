@@ -85,7 +85,7 @@ const Navbar = () => {
     <>
       {role == "user" || role == null ? (
         <>
-          <nav onLoad={userData} className="relative px-4 py-3 flex justify-between items-center bg-blue-300">
+          <nav onLoad={userData} className="relative px-4 py-3 flex justify-between items-center bg-white">
             <div className="flex flex-row justify-center items-center">
               <Image src={image} width={50} height={50} alt="df" />
               <p className="text-2xl text-center text-white font-bold ml-3 bg-red-500 w-auto h-auto py-1 pr-2">
@@ -93,7 +93,7 @@ const Navbar = () => {
                 Art{" "}
               </p>
             </div>
-            <div className="lg:hidden text-right bg-black">
+            <div className="lg:hidden flex justify-end items-center text-right ">
               <button
                 onClick={() => setToggle(true)}
                 className="navbar-burger flex items-center text-blue-600 p-3"
