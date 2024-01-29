@@ -340,7 +340,7 @@ export default function Main() {
   //   fetchdata();
   // }, []);
   return (
-    <div className=" w-[100%] h-wrap rounded p-2 pb-4 md:px-16">
+    <div className=" w-[100%] min-h-screen h-fit rounded p-2 pb-4 md:px-16">
 
       <div className="flex justify-center items-center my-2 mb-4">
         <span className="text-white text-lg font-bold">
