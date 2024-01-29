@@ -93,7 +93,7 @@ const Navbar = () => {
                 Art{" "}
               </p>
             </div>
-            <div className="lg:hidden">
+            <div className="lg:hidden text-right">
               <button
                 onClick={() => setToggle(true)}
                 className="navbar-burger flex items-center text-blue-600 p-3"
