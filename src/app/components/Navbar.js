@@ -85,7 +85,7 @@ const Navbar = () => {
     <>
       {role == "user" || role == null ? (
         <>
-          <nav onLoad={userData} className="relative px-4 py-3 flex justify-between items-center bg-white">
+          <nav onLoad={userData} className="relative px-4 py-3 flex justify-between items-center bg-blue-300">
             <div className="flex flex-row justify-center items-center">
               <Image src={image} width={50} height={50} alt="df" />
               <p className="text-2xl text-center text-white font-bold ml-3 bg-red-500 w-auto h-auto py-1 pr-2">
