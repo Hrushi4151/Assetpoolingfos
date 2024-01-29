@@ -149,7 +149,7 @@ const Page = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center px-6 py-6 mx-auto  ">
+    <div className="flex flex-col items-center justify-center px-6 py-6 mx-auto  min-h-screen">
       <div className="mb-6 md:mb-0 flex flex-row justify-content-center justify-center my-2">
         <p className="text-2xl text-center text-white font-bold ml-3 bg-red-500 w-auto h-auto py-1 pr-2">
           <span className=" bg-black text-white px-2 py-1">Bluechip</span> Art{" "}
