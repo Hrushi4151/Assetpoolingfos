@@ -56,7 +56,7 @@ const Home = () => {
     setportfoliodata(response.error);
   };
   return (
-    <div className="flex flex-col justify-center items-center w-auto p-4 md:p-10 overflow-hidden">
+    <div className="flex flex-col justify-center items-center w-auto min-h-screen p-4 md:p-10 overflow-hidden">
       <div className="mx-auto w-full md:w-[60vw] h-auto">
         <Slider />
       </div>
