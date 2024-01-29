@@ -43,7 +43,7 @@ export default function Main() {
   //   fetchdata();
   // }, [])
   return (
-    <div className="w-full h-screen rounded p-2 md:px-16">
+    <div className="w-full min-h-screen rounded p-2 md:px-16">
       <div className="flex justify-center items-center my-2 mb-4">
         <span className="text-white text-lg font-bold">Portfolio List</span>
       </div>
