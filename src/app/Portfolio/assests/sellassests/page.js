@@ -6,8 +6,10 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { toast } from "react-toastify";
 import "../../../../css/BuyAssestList.css";
+import Ethconverter from "@/app/EThconvert";
 
 export default function Main() {
+  const [dollarPrice, setDollarPrice] = useState(0);
   const router = useRouter();
 
   const [portfoliodata, setportfoliodata] = useState("");
@@ -27,6 +29,13 @@ export default function Main() {
   };
 
   useEffect(() => {
+    Ethconverter();
+    async function dollarconverter() {
+      let Dollarprice = (await fetch("https://api.exchangerate-api.com/v4/latest/USD"));
+      let price = await Dollarprice.json()
+      setDollarPrice(price.rates["INR"])
+    }
+    dollarconverter()
     fetchdata();
   }, []);
   return (
@@ -69,13 +78,15 @@ export default function Main() {
                       </p>
 
                     </td>
-                    <td className="px-6 py-4">{data.OrginalBuyPrice}</td>
+                    <td className="px-6 py-4">₹{data.OrginalBuyPrice}|${(data.OrginalBuyPrice / dollarPrice).toFixed(2)}</td>
                     <td className="px-6 py-4">
-                      {data.AssestBuyPrice}
+                      ₹{(data.AssestBuyPrice / 1).toFixed(2)}
+                      |${(data.AssestBuyPrice / dollarPrice).toFixed(2)}
                     </td>
 
                     <td className="px-6 py-4">
-                      {data.SellPrice}
+                      ₹{(data.SellPrice / 1).toFixed(2)}
+                      |${(data.SellPrice / dollarPrice).toFixed(2)}
                     </td>
                   </tr>
                 ))}
@@ -90,7 +101,7 @@ export default function Main() {
                   {portfoliodata && portfoliodata.forEach(element => {
                     total += parseFloat(element.OrginalBuyPrice);
                   })}
-                  <p className="text-lg font-semibold">Total Assets Sell Price:{total}</p>
+                  <p className="text-lg font-semibold">Total Assets Sell Price:₹{total}|${(total / dollarPrice).toFixed(2)}</p>
                 </td>
 
                 <td className="px-6 py-4"></td>

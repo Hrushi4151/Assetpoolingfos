@@ -22,7 +22,7 @@ const Page = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
         if (contactdata.email && contactdata.subject && contactdata.message) {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_HOST}api / sendContactEmail`, {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_HOST}api/sendContactEmail`, {
                 method: "POST",
                 headers: {
                     Accept: "application/json",

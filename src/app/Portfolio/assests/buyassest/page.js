@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Cookies from "js-cookie";
 import Web3 from "web3";
+import Ethconverter from "@/app/EThconvert";
 
 const Page = () => {
     const [myContract, setMyContract] = useState(null);
@@ -25,6 +26,7 @@ const Page = () => {
         }
         setContract();
         fetchEthereumPrice();
+        Ethconverter();
     }, [])
     const handleAccountsChanged = async (accounts) => {
         setsender(accounts[0]); // Use the first account in the array

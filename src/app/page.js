@@ -2,10 +2,12 @@
 import Home from "./components/Home";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Ethconverter from "./EThconvert";
 
 export default function Main() {
   const router = useRouter();
   useEffect(() => {
+    Ethconverter();
     const metamasklogin = async () => {
       try {
 

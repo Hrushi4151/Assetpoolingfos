@@ -3,11 +3,13 @@ import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import Link from 'next/link'
 import { jwtDecode } from "jwt-decode";
+import Ethconverter from "../EThconvert";
 
 
 export default function Main() {
   const router = useRouter();
   useEffect(() => {
+    Ethconverter();
     if (localStorage.getItem("token")) {
       let token = localStorage.getItem("token").toString();
       const decoded = jwtDecode(token);
@@ -20,10 +22,10 @@ export default function Main() {
         router.push("/login");
       } else {
         fetchdata();
-        
+
       }
     }
-  },[]);
+  }, []);
 
   const [portfoliodata, setportfoliodata] = useState("");
   const fetchdata = async () => {
@@ -43,7 +45,7 @@ export default function Main() {
   //   fetchdata();
   // }, [])
   return (
-    <div className="w-full min-h-screen rounded p-2 md:px-16">
+    <div className="w-full h-screen rounded p-2 md:px-16">
       <div className="flex justify-center items-center my-2 mb-4">
         <span className="text-white text-lg font-bold">Portfolio List</span>
       </div>

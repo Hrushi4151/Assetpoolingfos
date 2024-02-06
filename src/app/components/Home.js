@@ -10,11 +10,18 @@ import { useRouter } from "next/navigation";
 
 const Home = () => {
   const [portfoliodata, setportfoliodata] = useState([]);
+  const [dollarPrice, setDollarPrice] = useState(0);
   const router = useRouter();
   // useEffect(() => {
   //   allportfoliodata();
   // }, []);
   useEffect(() => {
+    async function dollarconverter() {
+      let Dollarprice = (await fetch("https://api.exchangerate-api.com/v4/latest/USD"));
+      let price = await Dollarprice.json()
+      setDollarPrice(price.rates["INR"])
+    }
+    dollarconverter()
     if (localStorage.getItem("token")) {
       let token = localStorage.getItem("token").toString();
       const decoded = jwtDecode(token);
@@ -56,7 +63,7 @@ const Home = () => {
     setportfoliodata(response.error);
   };
   return (
-    <div className="flex flex-col justify-center items-center w-auto min-h-screen p-4 md:p-10 overflow-hidden">
+    <div className="flex flex-col justify-center items-center w-auto p-4 md:p-10 overflow-hidden">
       <div className="mx-auto w-full md:w-[60vw] h-auto">
         <Slider />
       </div>
@@ -84,7 +91,7 @@ const Home = () => {
                   <div className="bg-white shadow-md rounded-lg max-w-sm m-2">
                     <Link
                       key={index}
-                      href={`/Portfolio/PortfolioDetails?pid=${elem._id}`}
+                      href={`/Portfolio/portfoliodetails?pid=${elem._id}`}
                     >
                       <h2 className="m-2 p-3 font-bold text-blue-600 text-3xl">
                         {elem.PortfolioName}
@@ -103,12 +110,15 @@ const Home = () => {
                       <div className="flex flex-wrap items-center justify-center my-2 mt-4">
                         <span className="text-sm font-bold m-2 px-2 py-2 rounded bg-orange-700 text-white">
                           Previous:₹{elem.PortfolioPrice && elem.PortfolioPrice[0].Price}
+                          |${elem.PortfolioPrice && (elem.PortfolioPrice[0].Price / dollarPrice).toFixed(2)}
                         </span>
                         <span className="text-sm font-bold m-2 px-2 py-2 rounded bg-green-700 text-white">
                           Current:₹{elem.PortfolioPrice && elem.PortfolioPrice[0].Price}
+                          |${elem.PortfolioPrice && (elem.PortfolioPrice[0].Price / dollarPrice).toFixed(2)}
                         </span>
                         <span className="text-sm font-bold m-2 px-2 py-2 rounded bg-pink-700 text-white">
                           Remaining:₹{Math.round(elem.RemainingPrice)}
+                          |${((elem.RemainingPrice) / dollarPrice).toFixed(2)}
                         </span>
                       </div>
                       <div className="flex items-center justify-center my-2 mt-4">

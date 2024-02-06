@@ -3,6 +3,7 @@ import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import Link from 'next/link'
 import { jwtDecode } from "jwt-decode";
+import Ethconverter from "@/app/EThconvert";
 
 
 export default function Main() {
@@ -31,6 +32,7 @@ export default function Main() {
   //   fetchdata();
   // }, [])
   useEffect(() => {
+    Ethconverter();
     if (localStorage.getItem("token")) {
       let token = localStorage.getItem("token").toString();
       const decoded = jwtDecode(token);

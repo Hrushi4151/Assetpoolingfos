@@ -7,7 +7,7 @@ import Image from "next/image";
 import image2 from "../images/defaultprofile.jpg"
 import { jwtDecode } from "jwt-decode";
 import { useRouter } from "next/navigation";
- 
+
 const Navbar = () => {
   let location = usePathname();
   const router = useRouter();
@@ -73,19 +73,16 @@ const Navbar = () => {
     //   change=!change;
     // }
     // },[setrole,loggedin]);
+    userData();
   }, [change, loggedin, setloggedin, role, setrole, logout]);
-  useEffect(() => {
-    return () => {
-      // userData();
-    }
-  })
+
 
 
   return (
     <>
       {role == "user" || role == null ? (
         <>
-          <nav onLoad={userData} className="relative px-4 py-3 flex justify-between items-center bg-white">
+          <nav className="relative px-4 py-3 flex justify-between items-center bg-white">
             <div className="flex flex-row justify-center items-center">
               <Image src={image} width={50} height={50} alt="df" />
               <p className="text-2xl text-center text-white font-bold ml-3 bg-red-500 w-auto h-auto py-1 pr-2">
@@ -93,7 +90,7 @@ const Navbar = () => {
                 Art{" "}
               </p>
             </div>
-            <div className="lg:hidden flex justify-end items-center text-right ">
+            <div className="lg:hidden">
               <button
                 onClick={() => setToggle(true)}
                 className="navbar-burger flex items-center text-blue-600 p-3"
@@ -432,6 +429,16 @@ const Navbar = () => {
               </button>
             </div>
             <ul className="hidden absolute top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 lg:mx-auto lg:flex lg:items-center lg:w-auto lg:space-x-6">
+              {/* <Link
+                className={`text-lg  hover:text-blue-500 hover:font-bold  ${location === "/dashboard"
+                  ? "text-blue-500 font-bold"
+                  : "text-gray-400"
+                  }`}
+                href={"/dashboard"}
+              >
+                Dashboard
+              </Link> */}
+              <li className="text-gray-300">|</li>
               <Link
                 className={`text-lg  hover:text-blue-500 hover:font-bold ${location === "/dashboard/Portfolio/createportfolio"
                   ? "text-blue-500 font-bold"
@@ -451,25 +458,25 @@ const Navbar = () => {
               >
                 Your Portfolio
               </Link>
-				{  /*<li className="text-gray-300">|</li>
-              <Link
-                className={`text-lg  hover:text-blue-500 hover:font-bold ${location === "/dashboard/users"
-                  ? "text-blue-500 font-bold"
-                  : "text-gray-400"
-                  }`}
-                href={"/dashboard/users"}
-              >
-                Users
-              </Link>*/}
               <li className="text-gray-300">|</li>
               <Link
-                className={`text-lg  hover:text-blue-500 hover:font-bold ${location === "/dashboard/profile"
+                className={`text-lg  hover:text-blue-500 hover:font-bold ${location === "/about"
                   ? "text-blue-500 font-bold"
                   : "text-gray-400"
                   }`}
-                href={"/dashboard/profile"}
+                href={"/about"}
               >
-                Profile
+                About
+              </Link>
+              <li className="text-gray-300">|</li>
+              <Link
+                className={`text-lg  hover:text-blue-500 hover:font-bold ${location === "/contact"
+                  ? "text-blue-500 font-bold"
+                  : "text-gray-400"
+                  }`}
+                href={"/contact"}
+              >
+                Contact
               </Link>
             </ul>
             {!loggedin ? (
@@ -590,6 +597,14 @@ const Navbar = () => {
                 <div>
                   <ul>
                     <li className="mb-1">
+                      {/* <Link
+                        className="block p-4 text-sm font-semibold text-gray-400 hover:bg-blue-50 hover:text-blue-600 rounded"
+                        href={"/dashboard"}
+                      >
+                        Dashboard
+                      </Link> */}
+                    </li>
+                    <li className="mb-1">
                       <Link
                         className="block p-4 text-sm font-semibold text-gray-400 hover:bg-blue-50 hover:text-blue-600 rounded"
                         href={"/dashboard/portfolios"}
@@ -605,20 +620,20 @@ const Navbar = () => {
                         Create Portfolio
                       </Link>
                     </li>
-{/* <li className="mb-1">
-                      <Link
-                        className="block p-4 text-sm font-semibold text-gray-400 hover:bg-blue-50 hover:text-blue-600 rounded"
-                        href={"/dashboard/users"}
-                      >
-                        Users
-                      </Link>
-                    </li>*/}
                     <li className="mb-1">
                       <Link
                         className="block p-4 text-sm font-semibold text-gray-400 hover:bg-blue-50 hover:text-blue-600 rounded"
-                        href={"/dashboard/profile"}
+                        href={"/about"}
                       >
-                        Profile
+                        About
+                      </Link>
+                    </li>
+                    <li className="mb-1">
+                      <Link
+                        className="block p-4 text-sm font-semibold text-gray-400 hover:bg-blue-50 hover:text-blue-600 rounded"
+                        href={"/contact"}
+                      >
+                        Contact
                       </Link>
                     </li>
                   </ul>

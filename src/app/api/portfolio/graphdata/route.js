@@ -39,7 +39,6 @@ export async function POST(req, res) {
         let prevPrice;
         let j = 0;
         let newArray = [];
-        console.log(PortfolioPrice);
 
         for (let i = 0; i < CurrYear.length; i++) {
             const currYearDate = new Date(CurrYear[i].date);
@@ -60,13 +59,13 @@ export async function POST(req, res) {
                 prevPrice = latestEntry.price;
                 newArray.push({ date: CurrYear[i].date, price: latestEntry.price });
                 j++;
-                console.log(latestEntry.price, j);
+                // console.log(latestEntry.price, j);
             } else {
                 newArray.push({ date: CurrYear[i].date, price: prevPrice });
             }
         }
-
-        return NextResponse.json({ status: 200, currentYear: newArray ,portfoliodata:portfoliodata});
+        console.log(newArray)
+        return NextResponse.json({ status: 200, currentYear: newArray, portfoliodata: portfoliodata });
     } catch (error) {
         console.log(error);
         return NextResponse.json({ status: 500, error: "Internal Server Error" });

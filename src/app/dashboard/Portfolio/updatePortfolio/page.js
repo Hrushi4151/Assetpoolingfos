@@ -116,6 +116,7 @@ const Page = () => {
           <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl ">
             {portfoliodata && portfoliodata.PortfolioName}
           </h1>
+          <p style={{ color: "red" }}>price must be in rupees</p>
           <form className="space-y-4 md:space-y-6" method="POST">
             {assetData.map((data, index) => (
               <div key={index}>

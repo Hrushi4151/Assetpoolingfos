@@ -7,6 +7,7 @@ import Link from "next/link";
 import { toast } from "react-toastify";
 import "../../../../css/BuyAssestList.css";
 import Web3 from "web3";
+import Ethconverter from "@/app/EThconvert";
 
 export default function Main() {
   const router = useRouter();
@@ -14,6 +15,7 @@ export default function Main() {
   const [myContract, setMyContract] = useState(null);
   const [userdata, setuserdata] = useState(null)
   const [web3, setweb3] = useState(null);
+  const [dollarPrice, setDollarPrice] = useState(0);
   const [portfoliodata, setportfoliodata] = useState("");
   const [DeleteCartState, setDeleteCartState] = useState(false);
   const [Deletedata, setDeletedata] = useState(null);
@@ -36,10 +38,17 @@ export default function Main() {
     setDeleteCartState(true);
   };
   useEffect(() => {
+    Ethconverter();
+    async function dollarconverter() {
+      let Dollarprice = (await fetch("https://api.exchangerate-api.com/v4/latest/USD"));
+      let price = await Dollarprice.json()
+      setDollarPrice(price.rates["INR"])
+    }
     if (window.ethereum) {
       window.ethereum.on("accountsChanged", handleAccountsChanged);
     }
 
+    dollarconverter()
     setContract();
   }, []);
   const handleAccountsChanged = async (accounts) => {
@@ -322,9 +331,12 @@ export default function Main() {
                   </svg>
                 </span>
                 <p class="block font-sans text-base antialiased font-normal leading-relaxed text-inherit">
-                  Profit:
+                  Profit:₹
                   {Deletedata
                     ? Deletedata.AssestBuyPrice - Deletedata.OrginalBuyPrice
+                    : "N/A"}
+                  |${Deletedata
+                    ? ((Deletedata.AssestBuyPrice - Deletedata.OrginalBuyPrice) / dollarPrice).toFixed(2)
                     : "N/A"}
                 </p>
               </li>
@@ -346,7 +358,8 @@ export default function Main() {
                   </svg>
                 </span>
                 <p class="block font-sans text-base antialiased font-normal leading-relaxed text-inherit">
-                  Buy Price:{Deletedata ? Deletedata.OrginalBuyPrice : "N/A"}
+                  Buy Price:₹{Deletedata ? Deletedata.OrginalBuyPrice : "N/A"}
+                  |${Deletedata ? ((Deletedata.OrginalBuyPrice) / dollarPrice).toFixed(2) : "N/A"}
                 </p>
               </li>
               <li class="flex items-center gap-4">
@@ -367,7 +380,8 @@ export default function Main() {
                   </svg>
                 </span>
                 <p class="block font-sans text-base antialiased font-normal leading-relaxed text-inherit">
-                  Sell Price:{Deletedata ? Deletedata.AssestBuyPrice : "N/A"}
+                  Sell Price:₹{Deletedata ? Deletedata.AssestBuyPrice : "N/A"}
+                  |${Deletedata ? (Deletedata.AssestBuyPrice / dollarPrice).toFixed(2) : "N/A"}
                 </p>
               </li>
               <li class="flex items-center gap-4">
@@ -388,7 +402,6 @@ export default function Main() {
                   </svg>
                 </span>
                 <p class="block font-sans text-base antialiased font-normal leading-relaxed text-inherit">
-                  Life time technical support
                 </p>
               </li>
             </ul>
@@ -441,9 +454,9 @@ export default function Main() {
                       <p className="text-gray-500">
                       </p>
                     </td>
-                    <td className="px-6 py-4">{data.OrginalBuyPrice}</td>
+                    <td className="px-6 py-4">₹{data.OrginalBuyPrice}|{(data.AssestBuyPrice / dollarPrice).toFixed(2)}</td>
                     <td className="px-6 py-4">
-                      {data.AssestBuyPrice}
+                      ₹{data.AssestBuyPrice}|${(data.AssestBuyPrice / dollarPrice).toFixed(2)}
                     </td>
 
                     <td className="px-6 py-4">
@@ -470,7 +483,7 @@ export default function Main() {
                   {portfoliodata && portfoliodata.forEach(element => {
                     total += parseFloat(element.OrginalBuyPrice);
                   })}
-                  <p className="text-lg font-semibold">Total Assests Price:{total}</p>
+                  <p className="text-lg font-semibold">Total Assests Price:₹{total}|${(total / dollarPrice).toFixed(2)}</p>
                 </td>
 
                 <td className="px-6 py-4"></td>

@@ -3,11 +3,14 @@ import Link from "next/link";
 import react, { useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
 import { useRouter } from "next/navigation";
+import Ethconverter from "@/app/EThconvert";
 
 
 const Page = () => {
   const [prices, setprices] = useState({ prev: "", curr: "", rem: "" });
   const [portfoliodata, setportfoliodata] = useState([]);
+  const [dollarPrice, setDollarPrice] = useState(0);
+
   const router = useRouter();
   // useEffect(() => {
   //   allportfoliodata();
@@ -22,7 +25,7 @@ const Page = () => {
           Accept: "application/json",
           "Content-Type": "application/json",
         },
-        body:JSON.stringify({ email: localStorage.getItem("APFOS_useremail") }),
+        body: JSON.stringify({ email: localStorage.getItem("APFOS_useremail") }),
       }
     );
     const response = await res.json()
@@ -31,6 +34,13 @@ const Page = () => {
   };
 
   useEffect(() => {
+    Ethconverter();
+    async function dollarconverter() {
+      let Dollarprice = (await fetch("https://api.exchangerate-api.com/v4/latest/USD"));
+      let price = await Dollarprice.json()
+      setDollarPrice(price.rates["INR"])
+    }
+    dollarconverter()
     if (localStorage.getItem("token")) {
       let token = localStorage.getItem("token").toString();
       const decoded = jwtDecode(token);
@@ -94,26 +104,20 @@ const Page = () => {
                           </h2>
                         </Link>
                         <div className="m-2 px-4 pb-4">
-                          <p>
-                            <span className="text-black font-medium text-lg tracking-tight ">
-                              {/* {(elem ? elem.overview : "").slice(0, 100) + "..."} */}
-                              Explore Edward Babcock&apos;s board &quot;Tri color
-                              combinations&quot; on Pinterest. See more ideas about
-                              color, color combinations, color inspiration.
-                            </span>
-                          </p>
+
 
                           <div className="flex flex-wrap items-center justify-center my-2 mt-4">
                             <span className="text-sm font-bold m-2 px-2 py-2 rounded bg-orange-700 text-white">
-                              Previous:
-                              {elem.PortfolioPrice[elem.PortfolioPrice.length - 2] ? elem.PortfolioPrice[elem.PortfolioPrice.length - 2].Price : "N/A"}
+                              Previous:₹{elem.PortfolioPrice && elem.PortfolioPrice[0].Price}
+                              |${elem.PortfolioPrice && (elem.PortfolioPrice[0].Price / dollarPrice).toFixed(2)}
                             </span>
                             <span className="text-sm font-bold m-2 px-2 py-2 rounded bg-green-700 text-white">
-                              Current:
-                              {elem.PortfolioPrice[elem.PortfolioPrice.length - 1] ? elem.PortfolioPrice[elem.PortfolioPrice.length - 1].Price : "N/A"}
+                              Current:₹{elem.PortfolioPrice && elem.PortfolioPrice[0].Price}
+                              |${elem.PortfolioPrice && (elem.PortfolioPrice[0].Price / dollarPrice).toFixed(2)}
                             </span>
                             <span className="text-sm font-bold m-2 px-2 py-2 rounded bg-pink-700 text-white">
-                              Remaining:{Math.round(elem.RemainingPrice)}
+                              Remaining:₹{Math.round(elem.RemainingPrice)}
+                              |${((elem.RemainingPrice) / dollarPrice).toFixed(2)}
                             </span>
                           </div>
                           <Link href={`/dashboard/Portfolio/userList?pid=${elem._id}`} className="flex items-center justify-center my-2 mt-4">
