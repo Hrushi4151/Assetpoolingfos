@@ -73,10 +73,12 @@ const Navbar = () => {
     //   change=!change;
     // }
     // },[setrole,loggedin]);
-    userData();
   }, [change, loggedin, setloggedin, role, setrole, logout]);
 
+  useEffect(() => {
+    userData();
 
+  }, [])
 
   return (
     <>
@@ -438,7 +440,7 @@ const Navbar = () => {
               >
                 Dashboard
               </Link> */}
-              <li className="text-gray-300">|</li>
+               {/* <li className="text-gray-300">|</li> */}
               <Link
                 className={`text-lg  hover:text-blue-500 hover:font-bold ${location === "/dashboard/Portfolio/createportfolio"
                   ? "text-blue-500 font-bold"

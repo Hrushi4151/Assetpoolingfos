@@ -11,6 +11,8 @@ import { useRouter } from "next/navigation";
 const Home = () => {
   const [portfoliodata, setportfoliodata] = useState([]);
   const [dollarPrice, setDollarPrice] = useState(0);
+  const [currency, setcurrency] = useState("$")
+
   const router = useRouter();
   // useEffect(() => {
   //   allportfoliodata();
@@ -63,7 +65,7 @@ const Home = () => {
     setportfoliodata(response.error);
   };
   return (
-    <div className="flex flex-col justify-center items-center w-auto p-4 md:p-10 overflow-hidden">
+    <div className="min-h-screen flex flex-col justify-start items-center w-auto p-4 md:p-10 overflow-hidden">
       <div className="mx-auto w-full md:w-[60vw] h-auto">
         <Slider />
       </div>
@@ -77,65 +79,57 @@ const Home = () => {
             if (index < 6) {
               return (
                 <div key={index}>
-                  {/* <div className="card" style={{ width: "18rem", color: "white", border: "1px solid red" }}>
-									<div className="card-body">
-										<h5 className="card-title"><Link key={index} href={`/Portfolio/PortfolioDetails?pid=${elem._id}`}>{elem.PortfolioName}</Link>
-										</h5>
-										<Link onClick={() => { Cookies.set("price", `${elem.Price}`) }} style={{ width: "10vh", color: "black" }} key={index} href={`/Portfolio/Assests/BuyAssest?pid=${elem._id}`}><div className="bg-white shadow-md rounded-lg max-w-sm m-2">
-											buy
-										</div>
-										</Link>
-									</div>
-								</div> */}
-
-                  <div className="bg-white shadow-md rounded-lg max-w-sm m-2">
-                    <Link
-                      key={index}
-                      href={`/Portfolio/portfoliodetails?pid=${elem._id}`}
-                    >
-                      <h2 className="m-2 p-3 font-bold text-blue-600 text-3xl">
-                        {elem.PortfolioName}
-                      </h2>
-                    </Link>
-                    <div className="m-2 px-4 pb-4">
-                      <p>
-                        <span className="text-black font-medium text-lg tracking-tight ">
-
-                          Explore Edward Babcock&apos;s board &apos;Tri color
-                          combinations&apos; on Pinterest. See more ideas about
-                          color, color combinations, color inspiration.
-                        </span>
-                      </p>
-
-                      <div className="flex flex-wrap items-center justify-center my-2 mt-4">
-                        <span className="text-sm font-bold m-2 px-2 py-2 rounded bg-orange-700 text-white">
-                          Previous:₹{elem.PortfolioPrice && elem.PortfolioPrice[0].Price}
-                          |${elem.PortfolioPrice && (elem.PortfolioPrice[0].Price / dollarPrice).toFixed(2)}
-                        </span>
-                        <span className="text-sm font-bold m-2 px-2 py-2 rounded bg-green-700 text-white">
-                          Current:₹{elem.PortfolioPrice && elem.PortfolioPrice[0].Price}
-                          |${elem.PortfolioPrice && (elem.PortfolioPrice[0].Price / dollarPrice).toFixed(2)}
-                        </span>
-                        <span className="text-sm font-bold m-2 px-2 py-2 rounded bg-pink-700 text-white">
-                          Remaining:₹{Math.round(elem.RemainingPrice)}
-                          |${((elem.RemainingPrice) / dollarPrice).toFixed(2)}
-                        </span>
-                      </div>
-                      <div className="flex items-center justify-center my-2 mt-4">
-                        <Link
-                          onClick={() => {
-                            Cookies.set("price", `${elem.Price}`);
-                          }}
-                          href={`Portfolio/assests/buyassest?pid=${elem._id}`}
-                        >
-                          <p className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center ">
-                            Buy
-                          </p>
-                        </Link>
-                      </div>
+                <div className="bg-white shadow-md rounded-lg max-w-sm m-2">
+                  <Link
+                    key={index}
+                    href={`/Portfolio/portfoliodetails?pid=${elem._id}`}
+                  >
+                    <h2 className="m-1 md:m-2 p-1 md:p-3 font-bold text-blue-600 text-3xl">
+                      {elem.PortfolioName}
+                    </h2>
+                  </Link>
+                  <div className="m-1 md:m-2 px-4 pb-4 items-center">
+                    
+                      <span className="block w-full text-center text-sm font-bold  p-1 md:p-2 text-black">Prices</span>
+                    <div className="flex flex-row flex-wrap items-center justify-center ">
+                      <span className="text-sm font-bold m-1 md:m-2 px-2 py-2 rounded bg-orange-700 text-white">
+                        Previous:{currency=="₹"?`₹${elem.PortfolioPrice && elem.PortfolioPrice[0].Price}
+                        `:`$${elem.PortfolioPrice && (elem.PortfolioPrice[0].Price / dollarPrice).toFixed(2)}`}
+                      </span>
+                      <span className="text-sm font-bold m-1 md:m-2 px-2 py-2 rounded bg-green-700 text-white">
+                        Current:{currency=="₹"?`₹${elem.PortfolioPrice && elem.PortfolioPrice[0].Price}
+                        `:`$${elem.PortfolioPrice && (elem.PortfolioPrice[0].Price / dollarPrice).toFixed(2)}`}
+                      </span>
+                      <span className="text-sm font-bold m-1 md:m-2 px-2 py-2 rounded bg-pink-700 text-white">
+                        Remaining:{currency=="₹"?`₹${Math.round(elem.RemainingPrice)}`
+                        :`$${((elem.RemainingPrice) / dollarPrice).toFixed(2)}`}
+                      </span>
+                    </div>
+                    <div className="flex w-full items-center justify-around my-2 mt-4">
+                    <Link href={`/dashboard?pid=${elem._id}`} className="flex w-full items-center justify-center my-2 m-2">
+                            <span className="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center ">
+                             View Graph
+                            </span>
+                          </Link>
+                             <Link
+                             className="flex w-full items-center justify-center my-2 m-2"
+                              onClick={() => {
+                                Cookies.set("price", `${elem.Price}`);
+                              }}
+                              href={`Portfolio/assests/buyassest?pid=${elem._id}`}
+                            >
+                               <span className="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center ">
+                             Buy
+                            </span>
+                            </Link>
+                          </div>
+                    <div className="w-full mx-auto flex justify-center items-end">
+                    <button className="m-1 text-white bg-gray-500 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm p-1 px-3 text-center" onClick={()=>setcurrency("$")}>$</button>
+                    <button className="m-1 text-white bg-gray-500 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm p-1 px-3 text-center" onClick={()=>setcurrency("₹")}>₹</button>
                     </div>
                   </div>
                 </div>
+              </div>
 
               );
             }

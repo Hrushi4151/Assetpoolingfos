@@ -81,7 +81,7 @@ const Page = () => {
             {portfoliodata &&
               portfoliodata.map((elem, index) => {
                 console.log(elem);
-                if (index < 6) {
+                if (index < 600) {
                   return (
                     <div key={index}>
                       {/* <div className="card" style={{ width: "18rem", color: "white", border: "1px solid red" }}>
@@ -133,6 +133,16 @@ const Page = () => {
                           <Link href={`/dashboard?pid=${elem._id}`} className="flex items-center justify-center my-2 mt-4">
                             <span className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center ">
                               Graph
+                            </span>
+                          </Link>
+                          <Link href={`/dashboard/fundtransaction/withdrawfunds?pid=${elem._id}`} className="flex items-center justify-center my-2 mt-4">
+                            <span className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center ">
+                              Withdraw
+                            </span>
+                          </Link>
+                          <Link href={`/dashboard/fundtransaction/addfunds?pid=${elem._id}`} className="flex items-center justify-center my-2 mt-4">
+                            <span className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center ">
+                              Deposite
                             </span>
                           </Link>
                           {/* <div className="flex items-center justify-center my-2 mt-4">

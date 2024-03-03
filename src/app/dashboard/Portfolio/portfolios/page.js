@@ -11,6 +11,7 @@ const Page = () => {
   const [term, setterm] = useState("popular");
   const [portfoliodata, setportfoliodata] = useState([]);
   const [dollarPrice, setDollarPrice] = useState(0);
+  const [currency, setcurrency] = useState("$")
 
   const router = useRouter();
 
@@ -96,32 +97,36 @@ const Page = () => {
                           key={index}
                           href={`/dashboard/Portfolio/portfoliodetails?pid=${elem._id}`}
                         >
-                          <h2 className="m-2 p-3 font-bold text-blue-600 text-3xl">
+                          <h2 className="m-1 md:m-2 p-1 md:p-3 font-bold text-blue-600 text-3xl">
                             {elem.PortfolioName}
                           </h2>
                         </Link>
-                        <div className="m-2 px-4 pb-4">
-
-
-                          <div className="flex flex-wrap items-center justify-center my-2 mt-4">
-                            <span className="text-sm font-bold m-2 px-2 py-2 rounded bg-orange-700 text-white">
-                              Previous:₹{elem.PortfolioPrice && elem.PortfolioPrice[0].Price}
-                              |${elem.PortfolioPrice && (elem.PortfolioPrice[0].Price / dollarPrice).toFixed(2)}
+                        <div className="m-1 md:m-2 px-4 pb-4 items-center">
+                          
+                            <span className="block w-full text-center text-sm font-bold  p-1 md:p-2 text-black">Prices</span>
+                          <div className="flex flex-row flex-wrap items-center justify-center ">
+                            <span className="text-sm font-bold m-1 md:m-2 px-2 py-2 rounded bg-orange-700 text-white">
+                              Previous:{currency=="₹"?`₹${elem.PortfolioPrice && elem.PortfolioPrice[0].Price}
+                              `:`$${elem.PortfolioPrice && (elem.PortfolioPrice[0].Price / dollarPrice).toFixed(2)}`}
                             </span>
-                            <span className="text-sm font-bold m-2 px-2 py-2 rounded bg-green-700 text-white">
-                              Current:₹{elem.PortfolioPrice && elem.PortfolioPrice[0].Price}
-                              |${elem.PortfolioPrice && (elem.PortfolioPrice[0].Price / dollarPrice).toFixed(2)}
+                            <span className="text-sm font-bold m-1 md:m-2 px-2 py-2 rounded bg-green-700 text-white">
+                              Current:{currency=="₹"?`₹${elem.PortfolioPrice && elem.PortfolioPrice[0].Price}
+                              `:`$${elem.PortfolioPrice && (elem.PortfolioPrice[0].Price / dollarPrice).toFixed(2)}`}
                             </span>
-                            <span className="text-sm font-bold m-2 px-2 py-2 rounded bg-pink-700 text-white">
-                              Remaining:₹{Math.round(elem.RemainingPrice)}
-                              |${((elem.RemainingPrice) / dollarPrice).toFixed(2)}
+                            <span className="text-sm font-bold m-1 md:m-2 px-2 py-2 rounded bg-pink-700 text-white">
+                              Remaining:{currency=="₹"?`₹${Math.round(elem.RemainingPrice)}`
+                              :`$${((elem.RemainingPrice) / dollarPrice).toFixed(2)}`}
                             </span>
                           </div>
-                          <Link href={`/dashboard?pid=${elem._id}`} className="flex items-center justify-center my-2 mt-4">
+                          <Link href={`/dashboard?pid=${elem._id}`} className="flex items-center justify-center my-2">
                             <span className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center ">
-                              Graph
+                             View Graph
                             </span>
                           </Link>
+                          <div className="w-full mx-auto flex justify-center items-end">
+                          <button className="m-1 text-white bg-gray-500 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm p-1 px-3 text-center" onClick={()=>setcurrency("$")}>$</button>
+                          <button className="m-1 text-white bg-gray-500 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm p-1 px-3 text-center" onClick={()=>setcurrency("₹")}>₹</button>
+                          </div>
                         </div>
                       </div>
                     </div>

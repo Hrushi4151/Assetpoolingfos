@@ -20,8 +20,14 @@ export default function Graph() {
   const [totalAssest, settotalAssest] = useState(0);
   const [daydata, setdaydata] = useState([]);
   function changeData(e) {
-    if (e.target.value == "day" || e.target.value == "week") {
-      setSelectState(e.target.value)
+    if (e.target.value == "day") {
+      setSelectState("day")
+    }
+    else {
+      const queryString = window.location.search;
+      const urlParams = new URLSearchParams(queryString);
+      let pid = urlParams.get("pid"); // value1
+      router.push("/dashboard/weekgraph?pid=" + pid);
     }
   }
   React.useEffect(() => {
@@ -58,6 +64,7 @@ export default function Graph() {
       let total = 0;
       let count = 0;
       if (response.currentYear && Array.isArray(response.currentYear)) {
+        daydata.length = 0
         if (selectState == "week") {
 
           for (let i = 0; i < response.currentYear.length; i++) {
@@ -66,8 +73,11 @@ export default function Graph() {
               let d = new Date(response.currentYear[i].date).getDate()
               let m = new Date(response.currentYear[i].date).getMonth() + 1;
               let dm = d + "/" + m
-              date.push(dm); daydata.push({ date: response.currentYear[i].date, price: total / count })
+              date.push(dm);
+              console.log(total)
+              daydata.push(parseInt(total / count))
               total = 0;
+              count = 0
             }
             else {
               count++;
@@ -88,7 +98,8 @@ export default function Graph() {
         }
       }
 
-      // console.log(daydata);
+      console.log(daydata);
+      console.log(date);
       var config = {
         type: "line",
         data: {
@@ -219,11 +230,11 @@ export default function Graph() {
           <div className="w-full h-[60vh] ">
             <canvas id="line-chart" className=""></canvas>
           </div>
-          <select onChange={changeData}>
-            <option value="day">day</option>
-            <option value="week">week</option>
+          <select className="text-gray-800 bg-white  focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm mx-2 p-2" onChange={changeData}>
+            <option className="text-gray-800 bg-white  focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm mx-2 p-3" value="day">day</option>
+            <option className="text-gray-800 bg-white  focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm mx-2 p-3" value="week">week</option>
           </select>
-          <Link href={'/dashboard/portfolios'} className="w-fit text-purple-800 bg-white hover:bg-gray-500 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm mx-2 px-2 py-2.5 text-center ">View Portfolios</Link>
+          <Link href={'/dashboard/portfolios'} className="my-1 w-fit text-purple-800 bg-white hover:bg-gray-500 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm mx-2 px-2 py-2.5 text-center ">View Portfolios</Link>
           <div className="flex flex-wrap align-items-center m-2">
             <span className="text-white font-semibold text-lg mx-1 px-2 py-2.5 text-center ">Total Assets :{portfoliodata && totalAssest} </span>
             <span className="text-white font-semibold text-lg mx-1 px-2 py-2.5 text-center ">Sold : ₹{portfoliodata && parseFloat(portfoliodata.Price) - parseFloat(portfoliodata.RemainingPrice)}|${portfoliodata && (parseFloat(portfoliodata.Price) - parseFloat(portfoliodata.RemainingPrice) / dollarPrice).toFixed(2)}</span>
